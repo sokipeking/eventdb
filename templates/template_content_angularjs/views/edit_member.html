@@ -1,0 +1,42 @@
+<div ng-controller="editMemberController">
+<div class="panel panel-inverse" data-sortable-id="form-stuff-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Input Types</h4>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal ng-pristine ng-valid">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">用户名</label>
+                            <div class="col-md-9">
+                                <input type="text" ng-model="susername" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">密码</label>
+                            <div class="col-md-9">
+                                <input type="text" ng-model="spassword" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">是否生效</label>
+                            <div class="col-md-9">
+                                <label class="radio-inline">
+                                    <input type="radio" name="optionsRadios" value="option1" ng-click="set_status(true)" ng-checked="status">
+                                    生效 
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="optionsRadios" value="option2" ng-checked="!status" ng-click="set_status(false)">
+                                    不生效 
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-9">
+                                <button type="submit" ng-click="submit()" class="btn btn-sm btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+</div>

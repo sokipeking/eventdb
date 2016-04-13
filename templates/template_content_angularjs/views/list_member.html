@@ -1,0 +1,24 @@
+<div ng-controller="listMemberController">
+<div class="panel panel-inverse" data-sortable-id="form-stuff-1">
+    <table class="table table-border">
+        <th>
+            <tr>
+                <td>ID</td>
+                <td>用户名</td>
+                <td>是否生效</td>
+                <td>操作</td>
+            </tr>
+        </th>
+        <tbody>
+            <tr ng-repeat="user in users">
+                <td>{{user.id}}</td>
+                <td>{{user.username}}</td>
+                <td>{{user.status}}</td>
+                <td>
+                    <a href="#/app/settings/member/edit/{{user.id}}" class="fa fa-pencil"></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
