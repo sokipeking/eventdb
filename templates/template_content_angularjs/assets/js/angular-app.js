@@ -43,6 +43,21 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,
             },
             data: { pageTitle: 'Doc Create' }
         })
+        .state('app.doc.delete', {
+            url: '/delete/:customer_id',
+            templaye:"<div class='ui-view'></div>",
+            controller: "deleteCustomerController",
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        files: [
+                            'assets/plugins/gritter/css/jquery.gritter.css',
+                            'assets/plugins/gritter/js/jquery.gritter.js'
+                        ] 
+                    });
+                }]
+            }
+        })
         .state('app.doc.edit', {
             url: '/edit/:customer_id',
             templateUrl: 'views/create_doc.html',
@@ -61,7 +76,6 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,
             },
             data: { pageTitle: 'Doc Edit' }
         })
-
         .state('app.doc.list', {
             url: '/list',
             templateUrl: 'views/list_doc.html',
@@ -83,6 +97,52 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,
                     });
                 }]
             }
+        })
+        .state('app.settings', {
+            url: '/settings/',
+            template: '<div class="ui-view"></div>',
+            abstract: true
+        })
+        .state('app.settings.member', {
+            url: 'member/',
+            template: '<div class="ui-view"></div>',
+            abstract: true
+        })
+        .state('app.settings.member.list', {
+            url: 'list/',
+            templateUrl: 'views/list_member.html',
+            data: {pageTitle: "List Account"}
+        })
+        .state('app.settings.member.create', {
+            url: 'create/',
+            templateUrl: 'views/edit_member.html',
+            data: { pageTitle: 'Create Account' },
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        files: [
+                            'assets/plugins/gritter/css/jquery.gritter.css',
+                            'assets/plugins/gritter/js/jquery.gritter.js'
+                        ] 
+                    });
+                }]
+            }
+        })
+        .state('app.settings.member.edit', {
+            url: 'edit/:user_id',
+            templateUrl: 'views/edit_member.html',
+            data: { pageTitle: 'Edit Account' },
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        files: [
+                            'assets/plugins/gritter/css/jquery.gritter.css',
+                            'assets/plugins/gritter/js/jquery.gritter.js'
+                        ] 
+                    });
+                }]
+            }
+
         })
 }]);
 
@@ -112,6 +172,7 @@ EventMember.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: { pageTitle: 'Login' },
             templateUrl: 'views/login.html'
         })
+
 }]);
 
 EventMember.run(['$rootScope', '$state', 'setting', function($rootScope, $state, setting) {

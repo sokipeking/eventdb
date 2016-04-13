@@ -16,6 +16,17 @@
                     <li ui-sref-active="active"><a ui-sref="app.doc.create">创建文档</a></li>
                 </ul>
             </li>
+            <li class="has-sub" ng-class="{active:$state.includes('app.settings')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-gear"></i>
+                    <span>系统设置</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active"><a ui-sref="app.settings.member.list">账号管理</a></li>
+                    <li ui-sref-active="active"><a ui-sref="app.settings.member.create">创建账号</a></li>
+                </ul>
+            </li>
             <!-- begin sidebar minify button -->
             <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
             <!-- end sidebar minify button -->

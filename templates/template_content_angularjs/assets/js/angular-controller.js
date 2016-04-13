@@ -435,13 +435,30 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
         }
     }
 });
+
+EventDB.controller('deleteCustomerController', function($scope, $http, $stateParams,$state){
+    $scope.customer_id = $stateParams.customer_id;
+    if (confirm("确定要删除这条资料吗？")){
+        $http.post("index.php", data={
+            "page": "doc",
+            "function": "delete_doc",
+            "args": {"id": $scope.customer_id}
+        }).success(function(response){
+            if (response=="1"){
+                $state.go("app.doc.list");
+            } else {
+                notify("删除文档", response);
+            }
+        });
+    }
+});
+
 EventDB.controller('listDocController', function($scope, $http){
     $http.post("index.php", data={
         "page": "doc",
         "function": "get_list",
         "args": {}
     }).success(function(response){
-    console.log(response);
     if ($('#data-table').length !== 0) {
         var dt = $('#data-table').DataTable({
             //responsive: true,
@@ -464,4 +481,63 @@ EventDB.controller('listDocController', function($scope, $http){
     }}).error(function(response){
         alert("网络错误");
     });
+});
+
+EventDB.controller('listMemberController', function($scope, $http){
+    $http.post("index.php", data={
+        "page": "user",
+        "function": "list_user",
+        "args": {}
+    }).success(function(response){
+        $scope.users = response;
+    });
+});
+
+EventDB.controller('editMemberController', function($stateParams, $state, $scope, $http){
+    $scope.user_id = $stateParams.user_id;
+    $scope.spassword = "";
+    if ($scope.user_id > 0){
+        $http.post("index.php", data={
+            "page": "user",
+            "function": "get_user_info",
+            "args": {"id": $scope.user_id}
+        }).success(function(response){
+            $scope.status = response["status"];
+            $scope.susername = response["username"];
+        });
+    }
+    else {
+        $scope.status=true;
+        $scope.susername = "";
+    }
+    $scope.set_status = function(bool){
+        $scope.status = bool;
+    };
+    $scope.submit = function(){
+        if ($scope.susername.length < 5) {
+            notify("system", "用户名长度不能小于5位");
+            return false;
+        } else if ($scope.spassword.length < 10) {
+            notify("system", "密码长度不能小于10位");
+            return false;
+        }
+        $http.post("index.php", data={
+            "page": "user",
+            "function": "edit_user",
+            "args": {
+                "id": $scope.user_id,
+                "username": $scope.susername,
+                "password": $scope.spassword,
+                "status": $scope.status
+                }
+        }).success(function(response){
+            if (response == "1") {
+                notify("system", "账户编辑成功");
+                $state.go("app.settings.member.list");
+            } else {
+                notify("system", response);
+            }
+        });
+    };
+    
 });

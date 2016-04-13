@@ -7,6 +7,18 @@ class DocObj{
         $this->dbh = $dbh;
     }
 
+    function delete($id) {
+        $sql = "UPDATE customer SET status=false WHERE id=:id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("id"=>$id)) or die("删除资料失败");
+        $sql = "UPDATE contact SET status=false WHERE customer_id=:id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("id"=>$id)) or die("删除联系人失败");
+        $sql = "UPDATE activity_log SET status=false WHERE customer_id=:id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("id"=>$id)) or die("删除日志失败");
+        return true;
+    }
     function update(
         $file_name,
         $date_opened,
@@ -184,7 +196,8 @@ class DocObj{
                 $row["raising_target"],
                 $row["current_status"],
                 $row["next_move"],
-                "<a href='#/app/doc/edit/{$row["id"]}'>编辑</a>"
+                "<a class='fa-pencil fa' href='#/app/doc/edit/{$row["id"]}'></a>&nbsp;
+                <a class='fa-trash-o fa' href='#/app/doc/delete/{$row["id"]}'></a>"
             ));
         }
         return $rows;
@@ -433,7 +446,7 @@ class DocController {
 
     function update_doc($params=array()){
         extract($params);
-        $res = $this->doc->update(
+        $res = @$this->doc->update(
             $file_name,
             $date_opened,
             $last_updated,
@@ -459,11 +472,17 @@ class DocController {
         );
         return true;
     }
+    
+    function delete_doc($params=array()) {
+        extract($params);
+        $this->doc->delete($id);
+        return true;
+    }
 
-    function create_doc($params = array()) {
+    function create_doc($params=array()) {
         extract($params);
         //print_r($params);
-        $res = $this->doc->create(
+        $res = @$this->doc->create(
             $file_name,
             $date_opened,
             $last_updated,
@@ -488,7 +507,7 @@ class DocController {
         );
         if ($res) {
             foreach ($contacts as $contact){
-                $contact_res = $this->contact_obj->create(
+                $contact_res = @$this->contact_obj->create(
                     $contact["name"],
                     $contact["title"],
                     $contact["phone"],
@@ -498,7 +517,7 @@ class DocController {
                 );
             }
             foreach ($logs as $log){
-                $log_res = $this->log_obj->create(
+                $log_res = @$this->log_obj->create(
                     $log["activity"],
                     $log["document"],
                     $log["document_file"],
