@@ -76,6 +76,11 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,
             },
             data: { pageTitle: 'Doc Edit' }
         })
+        .state('app.doc.show', {
+            url: '/show/:customer_id',
+            templateUrl: 'views/show_doc.html',
+            data: { pageTitle: 'Doc Show' }
+        })
         .state('app.doc.list', {
             url: '/list',
             templateUrl: 'views/list_doc.html',

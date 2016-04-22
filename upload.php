@@ -1,7 +1,7 @@
 <?php
 session_start();
 define("UPLOAD_DIR", "uploads/");
-$allow_exts = array("DOC", "DOCX", "PPT", "PPTX", "XLS", "XLSX", "TXT", "JPG", "PDF");
+$allow_exts = array("DOC", "DOCX", "PPT", "PPTX", "XLS", "XLSX", "TXT", "JPG", "PDF", "ZIP", "RAR");
 if (!isset($_SESSION["userinfo"])){
     header('HTTP/1.0 403 Forbidden');
     exit(1);

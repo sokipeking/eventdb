@@ -436,6 +436,50 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
     }
 });
 
+
+EventDB.controller('showDocController', function($scope, $http, $stateParams) {
+    $scope.customer_id = $stateParams.customer_id;
+    if ($scope.customer_id) {
+        $http.post("index.php", data={
+            "page": "doc",
+            "function": "get_obj",
+            "args": {"id": $scope.customer_id}
+        }).success(function (response){
+            $scope.date_opened = response["date_opened"];
+            $scope.last_updated = response["last_updated"];
+            $scope.jurisdiction = response["jurisdiction"];
+            $scope.region = response["region"];
+            $scope.website = response["website"];
+            $scope.industry = response["industry"];
+            $scope.model = response["model"];
+            $scope.product = response["product"];
+            $scope.stage = response["stage"];
+            $scope.pre_money = response["pre_money"];
+            $scope.raising_target = response["raising_target"];
+            $scope.zebra_stake = response["zebra_stake"];
+            $scope.author = response["author"];
+            $scope.current_status = response["current_status"];
+            $scope.next_move = response["next_move"];
+            $scope.note = response["note"];
+            $scope.zebra_team = response["zebra_team"];
+            $scope.source = response["source"];
+            $scope.contact_note = response["contact_note"];
+            $scope.file_name = response["file_name"];
+            $scope.contacts = response["contacts"];
+            $scope.logs = response["logs"];
+            if ($scope.contacts.length == 0) {
+                $scope.add_contact_row();
+            }
+            if ($scope.logs.length == 0) {
+                $scope.add_log_row();
+            }
+
+        }).error(function(response){
+            alert("网络错误");
+        });
+    }
+});
+
 EventDB.controller('deleteCustomerController', function($scope, $http, $stateParams,$state){
     $scope.customer_id = $stateParams.customer_id;
     if (confirm("确定要删除这条资料吗？")){

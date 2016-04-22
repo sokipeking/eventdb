@@ -188,7 +188,7 @@ class DocObj{
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
             array_push($rows, array(
                 $row["id"],
-                $row["file_name"],
+                "<a href='#/app/doc/show/".$row["id"]."'>".$row["file_name"]."</a>",
                 $row["industry"],
                 $row["region"],
                 $row["product"],
