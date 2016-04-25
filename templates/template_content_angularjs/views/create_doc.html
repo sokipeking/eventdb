@@ -1,4 +1,4 @@
-<div ng-controller="createDocController">
+<div ng-controller="createDocController" class="m-createdoc">
     <div class="table-responsive" style="background-color:#fff; padding:10px">
         <table class="table table-bordered">
             <thead>
@@ -8,29 +8,29 @@
             </thead>
             <tr><td>File Name:</td><td colspan="5"><input type="text" class="form-control" ng-model="file_name"/></td></tr>
             <tr>
-                <td>Date Opened</td><td><input type="text"  class="form-control datepicker" ng-model="date_opened"/></td> 
-                <td>Last Updated</td><td><input type="text"  class="form-control datepicker" ng-model="last_updated"/></td> 
-                <td>Author</td><td><input type="text" class="form-control" ng-model="author"/></td> 
+                <td>Date Opened</td><td><input type="text"  class="form-control datepicker" ng-model="date_opened"/></td>
+                <td>Last Updated</td><td><input type="text"  class="form-control datepicker" ng-model="last_updated"/></td>
+                <td>Author</td><td><input type="text" class="form-control" ng-model="author"/></td>
             </tr>
             <tr>
-                <td>Jurisdiction</td><td><input type="text" class="form-control" ng-model="jurisdiction"/></td> 
-                <td>Region</td><td><input type="text" class="form-control" ng-model="region"/></td> 
-                <td>Website</td><td><input type="text" class="form-control" ng-model="website"/></td> 
+                <td>Jurisdiction</td><td><input type="text" class="form-control" ng-model="jurisdiction"/></td>
+                <td>Region</td><td><input type="text" class="form-control" ng-model="region"/></td>
+                <td>Website</td><td><input type="text" class="form-control" ng-model="website"/></td>
             </tr>
             <tr>
-                <td>Industry</td><td><input type="text" class="form-control" ng_model="industry"/></td> 
-                <td>Model</td><td><input type="text" class="form-control" ng_model="model"/></td> 
-                <td>Product</td><td><input type="text" class="form-control" ng-model="product"/></td> 
+                <td>Industry</td><td><input type="text" class="form-control" ng_model="industry"/></td>
+                <td>Model</td><td><input type="text" class="form-control" ng_model="model"/></td>
+                <td>Product</td><td><input type="text" class="form-control" ng-model="product"/></td>
             </tr>
             <tr>
-                <td>Stage</td><td><input type="text" class="form-control" ng-model="stage"/></td> 
-                <td>Pre-money</td><td><input type="text" class="form-control" ng-model="pre_money"/></td> 
-                <td>Raising Target</td><td><input type="text" class="form-control" ng-model="raising_target"/></td> 
+                <td>Stage</td><td><input type="text" class="form-control" ng-model="stage"/></td>
+                <td>Pre-money</td><td><input type="text" class="form-control" ng-model="pre_money"/></td>
+                <td>Raising Target</td><td><input type="text" class="form-control" ng-model="raising_target"/></td>
             </tr>
             <tr>
-                <td>Zebra's Stake</td><td><input type="text" class="form-control" ng-model="zebra_stake"/></td> 
-                <td></td><td></td> 
-                <td></td><td></td> 
+                <td>Zebra's Stake</td><td><input type="text" class="form-control" ng-model="zebra_stake"/></td>
+                <td></td><td></td>
+                <td></td><td></td>
             </tr>
             <tr><td>Current Status:</td><td colspan="5"><input type="text" class="form-control" ng-model="current_status"/></td></tr>
             <tr><td>Next Move:</td><td colspan="5"><input type="text" class="form-control" ng-model="next_move"/></td></tr>
@@ -49,7 +49,7 @@
             <tr><td colspan="5">Company Contact</td></tr>
             <tr>
                 <td></td>
-                <td>Name</td><td>Title</td><td>Phone</td><td>Email</td> 
+                <td>Name</td><td>Title</td><td>Phone</td><td>Email</td>
             </tr>
             <tr ng-repeat="contact in contacts">
                 <td>
@@ -63,7 +63,7 @@
                 </td>
                 <td><input type="text" class="form-control" value="{{contact.title}}" ng-model="contact.title"/></td>
                 <td><input type="text" class="form-control" value="{{contact.phone}}" ng-model="contact.phone"/></td>
-                <td><input type="text" class="form-control" value="{{contact.email}}" ng-model="contact.email"/></td> 
+                <td><input type="text" class="form-control" value="{{contact.email}}" ng-model="contact.email"/></td>
             </tr>
             <tr><td colspan="2">Zebra Team:</td><td colspan="3"><input type="text" class="form-control" ng-model="zebra_team"/></td></tr>
             <tr><td colspan="2">Source:</td><td colspan="3"><input type="text" class="form-control" ng-model="source"/></td></tr>
@@ -79,10 +79,10 @@
                 </tr>
             </thead>
             <tr>
-                <td></td><td>Date</td><td>Activity</td><td>Document</td><td>Note</td> 
+                <td></td><td>Date</td><td>Activity</td><td>Document</td><td>Note</td>
             </tr>
             <tr ng-repeat="log in logs">
-                <td>
+                <td class="c1">
 
                     <a href="#" class="fa fa-plus" ng-click="add_log_row()"></a>
                     <a href="#" class="fa fa-minus" ng-click="del_log_row($index)"></a>
@@ -93,12 +93,12 @@
                 </td>
                 <td><input type="text" class="form-control" value="{{log.activity}}" ng-model="log.activity"/></td>
                 <td>
-                    <input type="text" class="form-control" value="{{log.document}}" ng-model="log.document"/>
+                    <input type="text" class="input-upload form-control" value="{{log.document}}" ng-model="log.document"/>
                     <input type="hidden" class="form-control" value="{{log.document_file}}" ng-model="log.document_file"/>
                     <a href="#" data-target="#modal-dialog" ng-click="set_choice_log($index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
                     <a target="_blank" href="{{log.document_file}}" ng-hide="!log.document_file" class="btn btn-sm btn-success">下载文件</a>
                 </td>
-                <td><input type="text" class="form-control" value="{{log.note}}" ng-model="log.note"/></td> 
+                <td><input type="text" class="form-control" value="{{log.note}}" ng-model="log.note"/></td>
             </tr>
         </table>
     <button type="submit" class="btn btn-sm btn-success" ng-click="submit()">Submit</button>
