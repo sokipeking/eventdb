@@ -645,11 +645,11 @@ class DocController {
                     $log["adate"]
                 );            
             }
-            $to = array("projects@zebraglobalcap.com");
-            $subject = "文档[{$res}]{$file_name}创建成功";
-            $message = "testtest";
-            $email = new Email(true);
-            $email->send($to, $subject, $message);
+            #$to = array("projects@zebraglobalcap.com");
+            #$subject = "文档[{$res}]{$file_name}创建成功";
+            #$message = "testtest";
+            #$email = new Email(true);
+            #$email->send($to, $subject, $message);
             return $res; 
         }
         return false;
