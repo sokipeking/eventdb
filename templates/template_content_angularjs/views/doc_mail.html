@@ -1,0 +1,39 @@
+<div ng-controller="DocMailController">
+
+    <div class="panel panel-inverse">
+        <div class="panel-heading">
+            <h4 class="panel-title">邮件列表</h4>
+        </div>
+        <div class="panel-body">
+            <ul class="timeline">
+                <li ng-repeat="mail in mails">
+                <!-- begin timeline-time -->
+                <div class="timeline-time">
+                    <span class="date">{{mail.headerinfo.MailDate|get_date}}</span>
+                    <span class="time">{{mail.headerinfo.MailDate|get_time}}</span>
+                </div>
+                <!-- end timeline-time -->
+                <!-- begin timeline-icon -->
+                <div class="timeline-icon">
+                    <a href="javascript:;"><i class="fa fa-paper-plane"></i></a>
+                </div>
+                <!-- end timeline-icon -->
+                <!-- begin timeline-body -->
+                <div class="timeline-body">
+                    <div class="timeline-header">
+                        <span class="username"><a href="mailto:{{mail.headerinfo.fromaddress}}">{{mail.headerinfo.fromaddress}}</a> <small></small></span>
+                        <span class="pull-right text-muted">18 Views</span>
+                    </div>
+                    <div class="timeline-content">
+                        <h4>{{mail.headerinfo.Subject}}</h4>
+                        <p>
+                        {{mail.body | mail_content | sanitize}} 
+                        </p>
+                    </div>
+                </div>
+                <!-- end timeline-body -->
+                </li>
+                </ul>
+        </div>
+    </div>
+</div>
