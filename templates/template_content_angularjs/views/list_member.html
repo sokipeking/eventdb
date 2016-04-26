@@ -1,14 +1,14 @@
 <div ng-controller="listMemberController">
-<div class="panel panel-inverse" data-sortable-id="form-stuff-1">
+<div class="panel panel-inverse m-account" data-sortable-id="form-stuff-1">
     <table class="table table-border">
-        <th>
+        <thead>
             <tr>
-                <td>ID</td>
-                <td>用户名</td>
-                <td>是否生效</td>
-                <td>操作</td>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>是否生效</th>
+                <th>操作</th>
             </tr>
-        </th>
+        </thead>
         <tbody>
             <tr ng-repeat="user in users">
                 <td>{{user.id}}</td>

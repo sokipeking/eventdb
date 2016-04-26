@@ -1,0 +1,44 @@
+/* 账号管理模块 */
+.m-account thead {
+  background-color: #f0f3f5;
+}
+/* 创建账号模块 */
+.m-createaccount input[type=checkbox],
+.m-createaccount input[type=radio] {
+  margin-top: 1px;
+}
+/* 创建文档模块 */
+.m-createdoc {
+  overflow: auto;
+  background-color: #fff;
+}
+.m-createdoc .table-responsive {
+  overflow: visible;
+  min-width: 1000px;
+}
+.m-createdoc thead {
+  background-color: #f0f3f5;
+}
+.m-createdoc .datepicker {
+  min-width: auto !important;
+}
+.m-createdoc .c1,
+.m-createdoc .c3,
+.m-createdoc .c5 {
+  width: 100px;
+}
+.m-createdoc .c2 {
+  width: 200px;
+}
+.m-createdoc .input-upload {
+  display: inline-block;
+  width: 150px;
+}
+/* 维护文档模块 */
+.m-doc {
+  overflow: auto;
+  background-color: #fff;
+}
+.m-doc .dataTables_wrapper {
+  min-width: 1000px;
+}
