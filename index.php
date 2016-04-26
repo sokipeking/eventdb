@@ -15,6 +15,10 @@ if (!$_POST) {
 
 if ($_POST) {
     require_once("includes/{$_POST["page"]}.php");
+    if ($_POST["page"] == 'doc') {
+        require_once("includes/PHPMailer/PHPMailerAutoload.php");        
+        require_once("includes/mail.php");        
+    }
     echo call_user_func(array($controller, $_POST["function"]), $_POST["args"]);
 }
 ?>

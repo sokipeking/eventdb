@@ -11,7 +11,8 @@ var EventDB = angular.module('EventDB', [
     'oc.lazyLoad'
 ]);
 
-EventDB.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+EventDB.config(['$stateProvider', '$urlRouterProvider', "$sceProvider", function($stateProvider, $urlRouterProvider, $sceProvider) {
+    $sceProvider.enabled(true);
     $urlRouterProvider.otherwise('/app/doc/list');
 
     $stateProvider
@@ -102,6 +103,11 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', function($stateProvider,
                     });
                 }]
             }
+        })
+        .state('app.doc.email', {
+            url: '/:customer_id/mail',
+            templateUrl: 'views/doc_mail.html',
+            data: { pageTitle: 'Doc MAIL' },
         })
         .state('app.settings', {
             url: '/settings/',

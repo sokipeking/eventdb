@@ -55,7 +55,6 @@
                 <td>
                     <a href="#" class="fa fa-plus" ng-click="add_contact_row()"></a>
                     <a href="#" class="fa fa-minus" ng-click="del_contact_row($index)"></a>
-                    <a href="#" class="fa fa-check" ng-hide="!customer_id" ng-click="update_contact_row($index)"></a>
                 </td>
                 <td>
                     <input type="text" class="form-control" value="{{contact.name}}" ng-model="contact.name"/>
@@ -83,20 +82,22 @@
             </tr>
             <tr ng-repeat="log in logs">
                 <td>
-
                     <a href="#" class="fa fa-plus" ng-click="add_log_row()"></a>
                     <a href="#" class="fa fa-minus" ng-click="del_log_row($index)"></a>
-                    <a href="#" class="fa fa-check" ng-hide="!customer_id" ng-click="update_log_row($index)"></a>
                 </td>
                 <td>
                     <input type="text" class="form-control datepicker" value={{log.adate}} ng-model="log.adate"/>
                 </td>
                 <td><input type="text" class="form-control" value="{{log.activity}}" ng-model="log.activity"/></td>
                 <td>
-                    <input type="text" class="form-control" value="{{log.document}}" ng-model="log.document"/>
-                    <input type="hidden" class="form-control" value="{{log.document_file}}" ng-model="log.document_file"/>
-                    <a href="#" data-target="#modal-dialog" ng-click="set_choice_log($index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
-                    <a target="_blank" href="{{log.document_file}}" ng-hide="!log.document_file" class="btn btn-sm btn-success">下载文件</a>
+                    <div ng-repeat="file in log.files">
+                        <input type="text" class="form-control" value="{{file.file_name}}" ng-model="file.file_name"/>
+                        <input type="hidden" class="form-control" value="{{file.file_path}}" ng-model="file.file_path"/>
+                        <a href="#" data-target="#modal-dialog" ng-click="set_choice_log($parent.$index, $index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
+                        <a target="_blank" href="{{file.document_file}}" ng-hide="!file.file_path" class="btn btn-sm btn-success">下载文件</a>
+                    <a href="#" class="fa fa-plus" ng-click="add_log_file($parent.$index)"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_log_file($parent.$index, $index)"></a>
+                    </div>
                 </td>
                 <td><input type="text" class="form-control" value="{{log.note}}" ng-model="log.note"/></td> 
             </tr>
@@ -109,6 +110,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h4 class="modal-title">上传文件</h4>
                 </div>
                 <div class="modal-body">

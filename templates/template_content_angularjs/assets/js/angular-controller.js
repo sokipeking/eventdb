@@ -178,43 +178,53 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
     $scope.customer_id = $stateParams.customer_id;
     $scope.choice_log = 0;
     if ($scope.customer_id) {
-        $http.post("index.php", data={
-            "page": "doc",
-            "function": "get_obj",
-            "args": {"id": $scope.customer_id}
-        }).success(function (response){
-            $scope.date_opened = response["date_opened"];
-            $scope.last_updated = response["last_updated"];
-            $scope.jurisdiction = response["jurisdiction"];
-            $scope.region = response["region"];
-            $scope.website = response["website"];
-            $scope.industry = response["industry"];
-            $scope.model = response["model"];
-            $scope.product = response["product"];
-            $scope.stage = response["stage"];
-            $scope.pre_money = response["pre_money"];
-            $scope.raising_target = response["raising_target"];
-            $scope.zebra_stake = response["zebra_stake"];
-            $scope.author = response["author"];
-            $scope.current_status = response["current_status"];
-            $scope.next_move = response["next_move"];
-            $scope.note = response["note"];
-            $scope.zebra_team = response["zebra_team"];
-            $scope.source = response["source"];
-            $scope.contact_note = response["contact_note"];
-            $scope.file_name = response["file_name"];
-            $scope.contacts = response["contacts"];
-            $scope.logs = response["logs"];
-            if ($scope.contacts.length == 0) {
-                $scope.add_contact_row();
-            }
-            if ($scope.logs.length == 0) {
-                $scope.add_log_row();
-            }
+        $scope.load_data = function(){
+            $http.post("index.php", data={
+                "page": "doc",
+                "function": "get_obj",
+                "args": {"id": $scope.customer_id}
+            }).success(function (response){
+                $scope.date_opened = response["date_opened"];
+                $scope.last_updated = response["last_updated"];
+                $scope.jurisdiction = response["jurisdiction"];
+                $scope.region = response["region"];
+                $scope.website = response["website"];
+                $scope.industry = response["industry"];
+                $scope.model = response["model"];
+                $scope.product = response["product"];
+                $scope.stage = response["stage"];
+                $scope.pre_money = response["pre_money"];
+                $scope.raising_target = response["raising_target"];
+                $scope.zebra_stake = response["zebra_stake"];
+                $scope.author = response["author"];
+                $scope.current_status = response["current_status"];
+                $scope.next_move = response["next_move"];
+                $scope.note = response["note"];
+                $scope.zebra_team = response["zebra_team"];
+                $scope.source = response["source"];
+                $scope.contact_note = response["contact_note"];
+                $scope.file_name = response["file_name"];
+                $scope.contacts = response["contacts"];
+                $scope.logs = response["logs"];
 
-        }).error(function(response){
-            alert("网络错误");
-        });
+                for(var i=0; i<$scope.logs.length;i++){
+                    if ($scope.logs[i].files.length == 0){
+                        $scope.add_log_file(i); 
+                    }
+                }
+
+                if ($scope.contacts.length == 0) {
+                    $scope.add_contact_row();
+                }
+                if ($scope.logs.length == 0) {
+                    $scope.add_log_row();
+                }
+
+            }).error(function(response){
+                alert("网络错误");
+            });
+        }
+        $scope.load_data();
     } else {
         $scope.contacts = [
             {id:"", name: "", title: "", phone: "", email: ""}
@@ -239,14 +249,14 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
                 }).success(function(response){
                     if(response == "1"){
                         notify("删除联系人", "成功");
-                        $scope.contacts.pop(index);
+                        $scope.contacts.splice(index, 1);
                     } else {
                         notify("删除联系人", response);
                     }
                 });
             }
         } else {
-            $scope.contacts.pop(index);
+            $scope.contacts.splice(index, 1);
         }
         if ($scope.contacts.length == 0) {
             $scope.add_contact_row();
@@ -287,7 +297,9 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
 
     $scope.add_log_row = function() {
         $scope.logs.push(
-            {id:"", date: "", activity: "", document: "", document_file: "",  note: ""}
+            {id:"", date: "", activity: "", document: "", document_file: "",  note: "",
+                files: [{"id":"", "file_name": "", "file_path": ""}]
+            }
         );
     }
 
@@ -302,14 +314,14 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
                 }).success(function(response){
                     if(response == "1") {
                         notify("删除日志", "成功");
-                        $scope.logs.pop(index);
+                        $scope.logs.splice(index, 1);
                     } else {
                         notify("删除日志", response);
                     }
                 }); 
             }
         } else {
-            $scope.logs.pop(index);
+            $scope.logs.splice(index, 1);
         }
     }
     
@@ -344,15 +356,47 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
         }
     }
 
-    $scope.set_choice_log = function(index) {
-        $scope.choice_log = index;
+    $scope.set_choice_log = function(log_index, file_index) {
+        $scope.choice_log = log_index;
+        $scope.file_index = file_index;
     }
-   
+ 
+    $scope.add_log_file = function(i){
+        $scope.logs[i].files.push(
+            {"id":"", "file_name": "", "file_path": ""}
+        );
+    };
+
     $scope.upload_file_change = function () {
         var uploaded_file = document.getElementById("upload_file_path").value.split("==");
-        $scope.logs[$scope.choice_log]["document"] = uploaded_file[0];
-        $scope.logs[$scope.choice_log]["document_file"] = uploaded_file[1];
-    }
+        $scope.logs[$scope.choice_log].files[$scope.file_index]["file_name"] = uploaded_file[0];
+        $scope.logs[$scope.choice_log].files[$scope.file_index]["file_path"] = uploaded_file[1];
+    };
+
+    $scope.del_log_file = function(log_index, file_index) {
+        if (confirm("确定要删除文件吗？")) {
+            var file_id = $scope.logs[log_index].files[file_index]["id"];
+            if (file_id) {
+                $http.post("index.php", data={
+                    "page": "doc",
+                    "function": "delete_file",
+                    "args": {
+                        id: file_id
+                    }
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.logs[log_index].files.splice(file_index, 1);
+            if ($scope.logs[log_index].files.length == 0) {
+                $scope.add_log_file(log_index); 
+            }
+        }
+    };
 
     $scope.upload_file = function(){
         var iframe = document.getElementById("upload_frame");
@@ -385,11 +429,14 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
                     source: $scope.source,
                     contact_note: $scope.contact_note,
                     file_name: $scope.file_name,
-                    id: $scope.customer_id
+                    id: $scope.customer_id,
+                    contacts: $scope.contacts,
+                    logs: $scope.logs
                 }
             }).success(function(response){
                 if(response == "1") {
                     notify("文档", "保存成功");
+                    $scope.load_data();
                 } else {
                     notify("文档", response);
                 }
@@ -427,7 +474,7 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
                 $rootScope.customer_id = response;
                 if(response > 0) {
                     notify("文档", "保存成功");
-                    $state.go("app.doc.edit", {id: response})
+                    $state.go("app.doc.edit", {customer_id: response});
                 } else {
                     notify("文档", response);
                 }
@@ -584,4 +631,16 @@ EventDB.controller('editMemberController', function($stateParams, $state, $scope
         });
     };
     
+});
+
+EventDB.controller("DocMailController", function ($stateParams, $state, $scope, $http){
+    var doc_id = $stateParams.customer_id;
+    $http.post("index.php", {
+        "page": "doc",
+        "function": "get_mail_list",
+        "args": {"doc_id": doc_id}
+    }).success(function(response){
+        $scope.mails = response;
+        console.log(response);
+    });
 });
