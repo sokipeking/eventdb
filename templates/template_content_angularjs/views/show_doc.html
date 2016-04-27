@@ -76,7 +76,9 @@
                 </td>
                 <td>{{log.activity}}</td>
                 <td>
-                    <a target="_blank" href="{{log.document_file}}" ng-hide="!log.document_file">{{log.document}}</a>
+                <div ng-repeat="file in log.files">
+                    <a target="_blank" href="{{file.file_path}}" ng-hide="!file.file_path">{{file.file_name}}</a>
+                </div>
                 </td>
                 <td>{{log.note}}</td>
             </tr>
