@@ -8,67 +8,78 @@
 </style>
 <div ng-controller="showDocController">
     <div class="table-responsive" style="background-color:#fff; padding:10px">
-<h4>Basic Information</h4>
+<h4>项目详情</h4>
         <table class="table table-bordered">
-            <tr><td class="td_bg">File Name:</td><td colspan="5">{{file_name}}</td></tr>
-            <tr>
-                <td class="td_bg">Date Opened</td><td>{{date_opened}}</td>
-                <td class="td_bg">Last Updated</td><td>{{last_updated}}</td>
-                <td class="td_bg">Author</td><td>{{author}}</td>
+            <tr><td class="td_bg">项目名称</td><td>{{file_name}}</td>
+                <td class="td_bg">立项时间</td><td>{{date_opened}}</td>
+                <td class="td_bg">更新时间</td><td>{{last_updated}}</td>
             </tr>
             <tr>
-                <td class="td_bg">Jurisdiction</a></td><td>{{jurisdiction}}</td>
-                <td class="td_bg">Region</td><td>{{region}}</td>
-                <td class="td_bg">Website</td><td>{{website}}</td>
+                <td class="td_bg">行业</a></td><td>{{industry}}</td>
+                <td class="td_bg">地域</td><td>{{region}}</td>
+                <td class="td_bg">发展阶段</td><td>{{stage | stage}}</td>
             </tr>
             <tr>
-                <td class="td_bg">Industry</td><td>{{industry}}</td>
-                <td class="td_bg">Model</td><td>{{model}}</td>
-                <td class="td_bg">Product</td><td>{{product}}</td>
+                <td class="td_bg">公司概况</td><td colspan="4">{{company_info}}</td>
             </tr>
             <tr>
-                <td class="td_bg">Stage</td><td>{{stage}}</td>
-                <td class="td_bg">Pre-money</td><td>{{pre_money}}</td>
-                <td class="td_bg">Raising Target</td><td>{{raising_target}}</td>
+                <td class="td_bg">融资规模</td><td>{{raising_target}} {{money_type_1 | money_type_1}}</td>
+                <td class="td_bg">投前估值</td><td>{{pre_money}} {{money_type_2 | money_type_2}}</td>
+                <td class="td_bg">投资类型</td><td>{{investment_type|investment_type}}</td>
             </tr>
             <tr>
-                <td class="td_bg">Zebra's Stake</td><td>{{zebra_stake}}</td>
-                <td class="td_bg"></td><td></td>
-                <td class="td_bg"></td><td></td>
+                <td class="td_bg">投资结构</td><td>{{investment_structure | investment_structure}}</td>
+
+                <td class="td_bg">来源</td><td>{{source | source}}</td>
+                <td></td><td></td>
             </tr>
-            <tr><td class="td_bg">Current Status:</td><td colspan="5">{{current_status}}</td></tr>
-            <tr><td class="td_bg">Next Move:</td><td colspan="5">{{next_move}}</td></tr>
-            <tr><td class="td_bg">Note:</td><td colspan="5">{{note}}</textarea></td></tr>
+            <tr>
+                <td class="td_bg">决策阶段</td><td>{{decision_stage | decision_stage}}</td>
+                <td class="td_bg">兴趣程度</td><td>{{interest_level | interest_level}}</td>
+                <td class="td_bg">下步计划</td><td>{{next_move}}</td>
+            </tr>
+            <tr><td class="td_bg">备注</td><td colspan="5">{{note}}</textarea></td></tr>
+        </table>
+    </div>
+
+
+
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+<h4>项目团队</h4>
+        <table class="table table-bordered">
+            <tr>
+                <td class="td_bg" width="400">项目团队</td><td>{{zebra_team|team}}</td>
+            </tr>
         </table>
     </div>
 
 
     <div class="table-responsive" style="background-color:#fff; padding:10px">
-<h4>Contact Information</h4>
+<h4>项目文档</h4>
         <table class="table table-bordered">
-            <tr><td colspan="4"  class="td_bg"><h5>Company Contact</h5></td></tr>
             <tr>
-                <td class="td_bg">Name</td><td class="td_bg">Title</td><td class="td_bg">Phone</td><td class="td_bg">Email</td>
+                <td class="td_bg">时间</td><td class="td_bg">类型</td><td class="td_bg">文件</td><td class="td_bg">备注</td>
             </tr>
-            <tr ng-repeat="contact in contacts">
+            <tr ng-repeat="f in files">
                 <td>
-                    {{contact.name}}
+                    {{f.adate}}
                 </td>
-                <td>{{contact.title}}</td>
-                <td>{{contact.phone}}</td>
-                <td>{{contact.email}}</td>
+                <td>{{f.ftype | ftype}}</td>
+                <td>
+                <div ng-repeat="file in f.files">
+                    <a target="_blank" href="{{file.file_path}}" ng-hide="!file.file_path">{{file.file_name}}</a>
+                </div>
+                </td>
+                <td>{{f.note}}</td>
             </tr>
-            <tr><td  class="td_bg">Zebra Team:</td><td colspan="3">{{zebra_team}}</td></tr>
-            <tr><td class="td_bg">Source:</td><td colspan="3">{{source}}</td></tr>
-            <tr><td class="td_bg">Note:</td><td colspan="3">{{contact_note}}</td></tr>
         </table>
     </div>
 
     <div class="table-responsive" style="background-color:#fff; padding:10px">
-<h4>Activity Log/ Document Index</h4>
+<h4>事件记录</h4>
         <table class="table table-bordered">
             <tr>
-                <td class="td_bg">Date</td><td class="td_bg">Activity</td><td class="td_bg">Document</td><td class="td_bg">Note</td>
+                <td class="td_bg">时间</td><td class="td_bg">事件</td><td class="td_bg">文件</td><td class="td_bg">备注</td>
             </tr>
             <tr ng-repeat="log in logs">
                 <td>
@@ -81,6 +92,39 @@
                 </div>
                 </td>
                 <td>{{log.note}}</td>
+            </tr>
+        </table>
+    </div>
+
+
+        <div class="table-responsive" style="background-color:#fff; padding:10px">
+<h4>公司信息</h4>
+        <table class="table table-bordered">
+            <tr>
+                <td class="td_bg">公司全称</td><td colspan=7>{{company_name}}</td>
+            </tr>
+            <tr>
+                <td class="td_bg">公司地址</td><td colspan=7>{{company_address}}</td>
+            </tr>
+            <tr>
+                <td colspan=8>联系人</td>
+            </tr>
+            <tr>
+                <td class="td_bg">相关方</td><td class="td_bg">关系</td><td class="td_bg">姓名</td><td class="td_bg">公司</td>
+                <td class="td_bg">职位</td><td class="td_bg">电话</td><td class="td_bg">邮箱</td><td class="td_bg">微信号</td>
+            </tr>
+            <tr ng-repeat="contact in contacts">
+                <td>
+                    {{contact.related | related}}
+                </td>
+                <td>{{contact.release | release}}</td>
+                <td>{{contact.name}}
+                </td>
+                <td>{{contact.company_name}}</td>
+                <td>{{contact.title}}</td>
+                <td>{{contact.phone}}</td>
+                <td>{{contact.email}}</td>
+                <td>{{contact.weixin}}</td>
             </tr>
         </table>
     </div>

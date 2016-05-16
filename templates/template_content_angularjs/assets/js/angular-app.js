@@ -5,6 +5,30 @@ Author: Sean Ngu
 Website: http://www.seantheme.com/color-admin-v1.9/admin/
 */
 
+
+var stage_options = [{id:1, label:"初创"},{id:2, label: "早期"},{id:3, label:"成长"},{id:4, label: "晚期"},{id:5, label: "已上市"}];
+var money_type_options = [{id:1, label: "US$"}, {id:2,label:"RMB"}];
+var investment_type_options = [{id:1, label: "早期控股"}, {id:2, label:"少数 （领投）"},{id:3, label: "少数 （跟投）"}, {id:4, label: "晚期控股"}];
+var source_options = [{id:1, label: "FA推介"}, {id:2, label: "会议"}, {id:3, label:"自有Network"}, {id:4, label:"公司主动联系"}, {id:5, label:"主动联系公司"}];
+var investment_structure_options = [{id:1, label: "美元投资"}, {id:2, label:"人民币投资"}, {id:3, label: "待定"}];
+var decision_stage_options = [{id:1, label: "筛选"}, {id:2, label:"评估"}, {id:3, label:"尽调"}, {id:4, label:"交割"}, {id:5, label:"投后"}, {id:6, label:"已否"}];
+var interest_level_options = [{id:1, label:"高"}, {id:2, label:"中"}, {id:3, label:"低"}];
+var team_options = [{id:1, label: "CC"}, {id:2, label: "David"}, {id:3, label: "Yilu"}];
+var related_options = [{id:1, label:"目标公司"}, {id:2, label:"投资人（跟投）"}, {id:3, label:"投资人（领投）"}, {id:4, label:"介绍人"}, {id:5, label:"第三方"}];
+var release_options = [{id:1, label:"管理层"}, {id:2, label:"FA"}, {id:3, label:"投行"}, {id:4, label:"律师"}, {id:5, label:"会计师"}, {id:6, label:"咨询顾问"}];
+var ftype_options = [{id:1, label: "Deal Memo"}, {id:2, label:"Preliminary IC Memo"}, {id:3, label:"Term Sheet"}, {id:4, label:"Final IC Memo"}];
+
+
+function find_options_value(id, options) {
+    for (var i=0; i < options.length; i ++){
+        if (options[i].id == id){
+            return options[i].label;
+        }
+    }
+}
+
+
+
 var EventDB = angular.module('EventDB', [
     'ui.router',
     'ui.bootstrap',

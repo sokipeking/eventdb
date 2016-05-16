@@ -157,7 +157,7 @@ class DocObj{
                 "<a href='#/app/doc/show/".$row["id"]."'>".$row["file_name"]."</a>",
                 $row["industry"],
                 $row["region"],
-                $row["pre_money"]."M".$row["money_type_1"],
+                $row["pre_money"]."M".$row["money_type_2"],
                 $row["raising_target"]."M".$row["money_type_1"],
                 $row["investment_type"],
                 $row["decision_stage"],
@@ -525,6 +525,12 @@ class DocController {
             return true;
     }
 
+    function delete_document_file($params=array()){
+        extract($params);
+        if ($this->customer_file->delete($id))
+            return true;
+    }
+
     function create_log($params=array()){
         extract($params);
         if($this->log_obj->create(
@@ -712,7 +718,9 @@ class DocController {
         $res = @$this->doc->create();
         if ($res) {
             foreach ($contacts as $contact){
-
+                if (empty($contact["name"])){
+                    continue;
+                }
                 $contact_res = @$this->contact_obj->create(
                     $contact["name"],
                     $contact["title"],
@@ -744,6 +752,9 @@ class DocController {
                 }         
             }
             foreach ($files as $fileobj){
+                if (empty($fileobj["adate"])){
+                    continue;
+                }
                 $log_res = @$this->customer_file->create(
                     $fileobj["ftype"],
                     $fileobj["note"],
