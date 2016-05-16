@@ -17,25 +17,25 @@
             <tr>
                 <td class="td_bg">行业</a></td><td>{{industry}}</td>
                 <td class="td_bg">地域</td><td>{{region}}</td>
-                <td class="td_bg">发展阶段</td><td>{{stage | stage}}</td>
+                <td class="td_bg">发展阶段</td><td>{{stage | stage}} <label ng-hide="stage!=999">{{stage_free}}</label></td>
             </tr>
             <tr>
                 <td class="td_bg">公司概况</td><td colspan="4">{{company_info}}</td>
             </tr>
             <tr>
-                <td class="td_bg">融资规模</td><td>{{raising_target}} {{money_type_1 | money_type_1}}</td>
-                <td class="td_bg">投前估值</td><td>{{pre_money}} {{money_type_2 | money_type_2}}</td>
-                <td class="td_bg">投资类型</td><td>{{investment_type|investment_type}}</td>
+                <td class="td_bg">融资规模</td><td>{{raising_target}} {{money_type_1 | money_type_1}} <label ng-hide="money_type_1 !=999">{{money_type_1_free}}</label></td>
+                <td class="td_bg">投前估值</td><td>{{pre_money}} {{money_type_2 | money_type_2}} <label ng-hide="money_type_2 !=999">{{money_type_2_free}}</label></td>
+                <td class="td_bg">投资类型</td><td>{{investment_type|investment_type}} <label ng-hide="investment_type !=999">{{investment_type_free}}</label></td>
             </tr>
             <tr>
-                <td class="td_bg">投资结构</td><td>{{investment_structure | investment_structure}}</td>
+                <td class="td_bg">投资结构</td><td>{{investment_structure | investment_structure}} <label ng-hide="investment_structure !=999">{{investment_structure_free}}</label></td>
 
-                <td class="td_bg">来源</td><td>{{source | source}}</td>
+                <td class="td_bg">来源</td><td>{{source | source}} <label ng-hide="source !=999">{{source_free}}</label></td>
                 <td></td><td></td>
             </tr>
             <tr>
-                <td class="td_bg">决策阶段</td><td>{{decision_stage | decision_stage}}</td>
-                <td class="td_bg">兴趣程度</td><td>{{interest_level | interest_level}}</td>
+                <td class="td_bg">决策阶段</td><td>{{decision_stage | decision_stage}} <label ng-hide="decision_stage !=999">{{decision_stage_free}}</label></td>
+                <td class="td_bg">兴趣程度</td><td>{{interest_level | interest_level}} <label ng-hide="interest_level !=999">{{interest_level_free}}</label></td>
                 <td class="td_bg">下步计划</td><td>{{next_move}}</td>
             </tr>
             <tr><td class="td_bg">备注</td><td colspan="5">{{note}}</textarea></td></tr>
@@ -64,7 +64,7 @@
                 <td>
                     {{f.adate}}
                 </td>
-                <td>{{f.ftype | ftype}}</td>
+                <td>{{f.ftype | ftype}} <label ng-hide="f.ftype !=999">{{f.ftype_free}}</label></td>
                 <td>
                 <div ng-repeat="file in f.files">
                     <a target="_blank" href="{{file.file_path}}" ng-hide="!file.file_path">{{file.file_name}}</a>
@@ -115,9 +115,9 @@
             </tr>
             <tr ng-repeat="contact in contacts">
                 <td>
-                    {{contact.related | related}}
+                    {{contact.related | related}} <label ng-hide="contact.related !=999">{{contact.related_free}}</label>
                 </td>
-                <td>{{contact.release | release}}</td>
+                <td>{{contact.release | release}} <label ng-hide="contact.release !=999">{{contact.release_free}}</label></td>
                 <td>{{contact.name}}
                 </td>
                 <td>{{contact.company_name}}</td>

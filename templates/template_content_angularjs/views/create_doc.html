@@ -20,6 +20,7 @@
                 <td>发展阶段</td><td>
                     <select class="form-control" ng-model="stage" ng-options="item.id as item.label for item in stage_options">
                     </select>
+                    <input type="text" class="form-control" ng-model="stage_free" ng-hide="stage != 999"/>
             </td>
             </tr>
             <tr>
@@ -27,19 +28,33 @@
                 <td colspan="5"><input type="text" class="form-control" ng-model="company_info"/></td>
             </tr>
             <tr>
-                 <td>融资规模</td><td><select class="form-control" ng-model="money_type_1" ng-options="item.id as item.label for item in money_type_options"></select><input type="text" class="form-control" ng-model="raising_target"/>M</td>
-                 <td>投前估值</td><td><select class="form-control" ng-model="money_type_2" ng-options="item.id as item.label for item in money_type_options"></select><input type="text" class="form-control" ng-model="pre_money"/>M</td>
-                 <td>投资类型</td><td><select class="form-control" ng-model="investment_type" ng-options="item.id as item.label for item in investment_type_options"/></td>
+                 <td>融资规模</td><td><select class="form-control" ng-model="money_type_1" ng-options="item.id as item.label for item in money_type_options"></select>
+                 <input type="text" class="form-control" ng-model="money_type_1_free" ng-hide="money_type_1 != 999"/>
+                 <input type="text" class="form-control" ng-model="raising_target"/>M</td>
+                 <td>投前估值</td><td><select class="form-control" ng-model="money_type_2" ng-options="item.id as item.label for item in money_type_options"></select>
+                 <input type="text" class="form-control" ng-model="money_type_2_free" ng-hide="money_type_2 != 999"/>
+                 <input type="text" class="form-control" ng-model="pre_money"/>M</td>
+                 <td>投资类型</td><td><select class="form-control" ng-model="investment_type" ng-options="item.id as item.label for item in investment_type_options"/>
+                    <input type="text" class="form-control" ng-model="investment_type_free" ng-hide="investment_type != 999"/>
+                </td>
             </tr>
             <tr>
                 <td>投资结构</td>
-                <td colspan="3"><select class="form-control" ng-model="investment_structure" ng-options="item.id as item.label for item in investment_structure_options"/></td>
+                <td colspan="3"><select class="form-control" ng-model="investment_structure" ng-options="item.id as item.label for item in investment_structure_options"/>
+                    <input type="text" class="form-control" ng-model="investment_structure_free" ng-hide="investment_structure != 999"/>
+                </td>
                 <td>来源</td>
-                <td><select class="form-control" ng-model="source" ng-options="item.id as item.label for item in source_options"/></td>
+                <td><select class="form-control" ng-model="source" ng-options="item.id as item.label for item in source_options"/>
+<input type="text" class="form-control" ng-model="source_free" ng-hide="source != 999"/>
+                </td>
             </tr>
             <tr>
-                 <td>决策阶段</td><td><select class="form-control" ng-model="decision_stage" ng-options="item.id as item.label for item in decision_stage_options"/></td>
-                 <td>兴趣程度</td><td><select class="form-control" ng-model="interest_level" ng-options="item.id as item.label for item in interest_level_options"/></td>
+                 <td>决策阶段</td><td><select class="form-control" ng-model="decision_stage" ng-options="item.id as item.label for item in decision_stage_options"/>
+                 <input type="text" class="form-control" ng-model="decision_stage_free" ng-hide="decision_stage != 999"/>
+             </td>
+                 <td>兴趣程度</td><td><select class="form-control" ng-model="interest_level" ng-options="item.id as item.label for item in interest_level_options"/>
+                 <input type="text" class="form-control" ng-model="interest_level_free" ng-hide="interest_level != 999"/>
+             </td>
                  <td>下步计划</td><td><input type="text" class="form-control" ng-model="next_move"/></td>
             </tr>
             <tr><td>备注</td><td colspan="5"><textarea class="form-control" ng-model="note"></textarea></td></tr>
@@ -79,7 +94,9 @@
                 <td>
                     <input type="text" class="form-control datepicker" ng-model="file.adate"/>
                 </td>
-                <td><select class="form-control" ng-model="file.ftype" ng-options="item.id as item.label for item in ftype_options"></select></td>
+                <td><select class="form-control" ng-model="file.ftype" ng-options="item.id as item.label for item in ftype_options"></select>
+                    <input type="text" class="form-control" ng-model="file.ftype_free" ng-hide="file.ftype != 999"/>
+                </td>
                 <td>
                     <div ng-repeat="f in file.files">
                     <input type="text" class="input-upload form-control"  ng-model="f.file_name"/>
@@ -156,8 +173,12 @@
                     <a href="#" class="fa fa-plus" ng-click="add_contact_row()"></a>
                     <a href="#" class="fa fa-minus" ng-click="del_contact_row($index)"></a>
                 </td>
-                <td><select class="form-control" ng-model="contact.related" ng-options="item.id as item.label for item in related_options"></select></td>
-                <td><select class="form-control" ng-model="contact.release" ng-options="item.id as item.label for item in release_options"></select></td>
+                <td><select class="form-control" ng-model="contact.related" ng-options="item.id as item.label for item in related_options"></select>
+                    <input type="text" class="form-control" ng-model="contact.related_free" ng-hide="contact.related != 999"/>
+                </td>
+                <td><select class="form-control" ng-model="contact.release" ng-options="item.id as item.label for item in release_options"></select>
+                    <input type="text" class="form-control" ng-model="contact.release_free" ng-hide="contact.release != 999"/>
+                </td>
                 <td>
                     <input type="text" class="form-control" ng-model="contact.name"/>
                     <input type="hidden" class="form-control" ng-model="contact.id"/>

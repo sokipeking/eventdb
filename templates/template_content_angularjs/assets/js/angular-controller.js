@@ -302,6 +302,15 @@ EventDB.controller('createDocController', function($scope, $http, $rootScope, $s
                 //console.log($scope.contacts);
                 $scope.files= response["files"];
 
+                $scope.stage_free = response["stage_free"],
+                $scope.money_type_1_free = response["money_type_1_free"],
+                $scope.money_type_2_free = response["money_type_2_free"],
+                $scope.investment_type_free = response["investment_type_free"],
+                $scope.investment_structure_free = response["investment_structure_free"],
+                $scope.source_free = response["source_free"],
+                $scope.decision_stage_free = response["decision_stage_free"],
+                $scope.interest_level_free = response["interest_level_free"]
+
                 for(var i=0; i<$scope.logs.length;i++){
                     if ($scope.logs[i].files.length == 0){
                         $scope.add_log_file(i); 
@@ -325,6 +334,8 @@ EventDB.controller('createDocController', function($scope, $http, $rootScope, $s
         $scope.load_data();
     } else {
         $scope.zebra_team = new Array();
+        $scope.date_opened = new Date().format("yyyy-MM-dd");
+        $scope.last_updated = new Date().format("yyyy-MM-dd");
         $scope.contacts = [
             {id:"", name: "", title: "", phone: "", email: ""}
         ];
@@ -539,6 +550,14 @@ EventDB.controller('createDocController', function($scope, $http, $rootScope, $s
                     company_name:$scope.company_name,
                     company_address:$scope.company_address,
                     contacts: $scope.contacts,
+                    stage_free: $scope.stage_free,
+                    money_type_1_free: $scope.money_type_1_free,
+                    money_type_2_free: $scope.money_type_2_free,
+                    investment_type_free: $scope.investment_type_free,
+                    investment_structure_free: $scope.investment_structure_free,
+                    source_free: $scope.source_free,
+                    decision_stage_free: $scope.decision_stage_free,
+                    interest_level_free: $scope.interest_level_free,
                     id: $scope.customer_id,
                     logs: $scope.logs,
                     files:$scope.files
@@ -581,7 +600,15 @@ EventDB.controller('createDocController', function($scope, $http, $rootScope, $s
                     company_address:$scope.company_address,
                     contacts: $scope.contacts,
                     logs: $scope.logs,
-                    files:$scope.files
+                    files:$scope.files,
+                    stage_free: $scope.stage_free,
+                    money_type_1_free: $scope.money_type_1_free,
+                    money_type_2_free: $scope.money_type_2_free,
+                    investment_type_free: $scope.investment_type_free,
+                    investment_structure_free: $scope.investment_structure_free,
+                    source_free: $scope.source_free,
+                    decision_stage_free: $scope.decision_stage_free,
+                    interest_level_free: $scope.interest_level_free
                 }
             }).success(function(response){
                 $rootScope.customer_id = response;
@@ -626,7 +653,16 @@ EventDB.controller('showDocController', function($scope, $http, $stateParams) {
                 $scope.note = response["note"];   
                 $scope.company_name = response["company_name"]; 
                 $scope.company_address = response["company_address"]; 
-                $scope.zebra_team = response["zebra_team"].split(','); 
+                $scope.zebra_team = response["zebra_team"].split(',');
+
+                $scope.stage_free = response["stage_free"],
+                $scope.money_type_1_free = response["money_type_1_free"],
+                $scope.money_type_2_free = response["money_type_2_free"],
+                $scope.investment_type_free = response["investment_type_free"],
+                $scope.investment_structure_free = response["investment_structure_free"],
+                $scope.source_free = response["source_free"],
+                $scope.decision_stage_free = response["decision_stage_free"],
+                $scope.interest_level_free = response["interest_level_free"]
 
                 $scope.logs= response["logs"];
                 $scope.contacts= response["contacts"];
@@ -667,6 +703,7 @@ EventDB.controller('listDocController', function($scope, $http, $rootScope){
         var dt = $('#data-table').DataTable({
             //responsive: true,
             columns: [
+            {title: "ID"},
                 {title: "立项时间"},
                 {title: "项目名称"},
                 {title: "行业"},
@@ -682,17 +719,21 @@ EventDB.controller('listDocController', function($scope, $http, $rootScope){
             data: response,
             createdRow: function(row, data, index){
                 //融资
-                var raising_target_tmp = data[4].split("M");
+                var raising_target_tmp = data[5].split("M");
                 var raising_target = raising_target_tmp[0];
-                var money_type_1 = find_options_value(raising_target_tmp[1], money_type_options);
-                raising_target = raising_target + "M " + money_type_1;
-                $("td", row).eq(5).text(raising_target);
+                if ($.isNumeric(raising_target_tmp[1])){
+                    var money_type_1 = find_options_value(raising_target_tmp[1], money_type_options);
+                    raising_target = raising_target + "M " + money_type_1;
+                    $("td", row).eq(6).text(raising_target);
+                }
                 //估值
-                var pre_money_tmp = data[5].split("M");
+                var pre_money_tmp = data[6].split("M");
                 var pre_money = pre_money_tmp[0];
-                var money_type_1 = find_options_value(pre_money_tmp[1], money_type_options);
-                pre_money = pre_money + "M " + money_type_1;
-                $("td", row).eq(4).text(pre_money);
+                if ($.isNumeric(pre_money_tmp[1])){
+                    var money_type_1 = find_options_value(pre_money_tmp[1], money_type_options);
+                    pre_money = pre_money + "M " + money_type_1;
+                    $("td", row).eq(5).text(pre_money);
+                }
                 //类型
                 $("td", row).eq(6).text(find_options_value(data[6], investment_type_options));
                 //阶段

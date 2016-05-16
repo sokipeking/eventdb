@@ -28,7 +28,15 @@ class DocObj{
     "update_dt"=>null,
     "create_user"=>null,
     "last_editor"=>null,
-    "status"=>null
+    "status"=>null,
+    "stage_free"=>null,
+    "money_type_1_free"=>null,
+    "money_type_2_free"=>null,
+    "investment_type_free"=>null,
+    "investment_structure_free"=>null,
+    "source_free"=>null,
+    "decision_stage_free"=>null,
+    "interest_level_free"=>null
     );
     //extract($this->properties);
 
@@ -80,7 +88,15 @@ class DocObj{
             company_name=:company_name,
             company_address=:company_address,
             update_dt=now(),
-            last_editor=:last_editor
+            last_editor=:last_editor,
+            stage_free=:stage_free,
+            money_type_1_free=:money_type_1_free,
+            money_type_2_free=:money_type_2_free,
+            investment_type_free=:investment_type_free,
+            investment_structure_free=:investment_structure_free,
+            source_free=:source_free,
+            decision_stage_free=:decision_stage_free,
+            interest_level_free=:interest_level_free
             WHERE id=:id";
         $stmt = $this->dbh->prepare($sql);
         $params = array();
@@ -127,7 +143,15 @@ class DocObj{
             now(),
             :create_user,
             :last_editor,
-            true
+            true,
+            :stage_free,
+            :money_type_1_free,
+            :money_type_2_free,
+            :investment_type_free,
+            :investment_structure_free,
+            :source_free,
+            :decision_stage_free,
+            :interest_level_free
         )";
         $stmt = $this->dbh->prepare($sql);
         $params = array();
@@ -145,23 +169,33 @@ class DocObj{
 
         return $this->dbh->lastInsertId("customer_id_seq");
     }
-    
+    function get_no($id){
+        $tpl = "P000000";
+        $tpl = substr($tpl, 0, strlen($tpl) - strlen($id));
+        return $tpl.$id;
+    }
     function get_list(){
         $sql = "SELECT * FROM customer WHERE status=true";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $rows = array();
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+            $money_type_1 = $row["money_type_1"]==999 ? $row["money_type_1_free"] : $row["money_type_1"];
+            $money_type_2 = $row["money_type_2"]==999 ? $row["money_type_2_free"] : $row["money_type_2"];
+            $investment_type = $row["investment_type"]==999 ? $row["investment_type_free"]:$row["investment_type"];
+            $decision_stage = $row["decision_stage"]==999 ? $row["decision_stage_free"]:$row["decision_stage"];
+            $interest_level = $row["interest_level"]==999 ? $row["interest_level_free"]:$row["interest_level"];
             array_push($rows, array(
+                $this->get_no($row["id"]),
                 $row["date_opened"],
                 "<a href='#/app/doc/show/".$row["id"]."'>".$row["file_name"]."</a>",
                 $row["industry"],
                 $row["region"],
-                $row["pre_money"]."M".$row["money_type_2"],
-                $row["raising_target"]."M".$row["money_type_1"],
-                $row["investment_type"],
-                $row["decision_stage"],
-                $row["interest_level"],
+                $row["pre_money"]."M".$money_type_2,
+                $row["raising_target"]."M".$money_type_1,
+                $investment_type,
+                $decision_stage,
+                $interest_level,
                 $row["next_move"],
                 "<a class='fa-pencil fa' href='#/app/doc/edit/{$row["id"]}'></a>&nbsp;
                 <a class='fa-trash-o fa' href='#/app/doc/delete/{$row["id"]}'></a>&nbsp;
@@ -245,17 +279,18 @@ class CompanyContact {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function update($id, $name, $title, $phone, $email, $create_user, $related, $release, $company_name, $weixin) {
+    function update($id, $name, $title, $phone, $email, $create_user, $related, $release, $company_name, $weixin,$related_free,$release_free) {
         $sql = "UPDATE contact SET
             name=:name,
             title=:title, phone=:phone, email=:email,
             update_dt=current_timestamp, last_editor=:create_user,related=:related,
-            release=:release,company_name=:company_name,weixin=:weixin WHERE id=:id";
+            release=:release,company_name=:company_name,weixin=:weixin,related_free=:related_free, release_free=:release_free WHERE id=:id";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(
             array("name"=>$name, "title"=>$title, "phone"=>$phone,
             "email"=>$email, "create_user"=>$create_user, "id"=>$id, "related"=>$related,
-            "release"=>$release, "company_name"=>$company_name,"weixin"=>$weixin)
+            "release"=>$release, "company_name"=>$company_name,"weixin"=>$weixin,
+            "release_free"=>$release_free, "related_free"=>$related_free)
         ) or die("修改联系人失败，请联系技术人员");
         return true;
     }
@@ -274,7 +309,7 @@ class CompanyContact {
         $email,
         $create_user,
         $customer_id,
-        $related, $release, $company_name, $weixin
+        $related, $release, $company_name, $weixin,$related_free,$release_free
     ){
         $sql = "INSERT INTO contact VALUES(
             default,
@@ -291,13 +326,15 @@ class CompanyContact {
             :related,
             :release,
             :company_name,
-            :weixin
+            :weixin,
+            :related_free,
+            :release_free
         )";
         $stmt = $this->dbh->prepare($sql);
         $params = array("name"=>$name, "title"=>$title, "phone"=>$phone,
                 "email"=>$email, "create_user"=>$create_user,
                 "customer_id"=>$customer_id,
-                "related"=>$related, "release"=>$release, "company_name"=>$company_name, "weixin"=>$weixin);
+                "related"=>$related, "release"=>$release, "company_name"=>$company_name, "weixin"=>$weixin,"related_free"=>$related_free,"release_free"=>$release_free);
         //print_r($params);
         $stmt->execute(
             $params
@@ -339,20 +376,22 @@ class CustomerFile {
         $create_user,
         $adate,
         $note,
-        $id
+        $id,
+        $ftype_free
     ){
         $sql = "UPDATE customer_file SET 
             ftype=:ftype,
             note=:note,
             update_dt=current_timestamp,
             last_editor=:create_user,
-            adate=:adate
+            adate=:adate,
+            ftype_free=:ftype_free
             WHERE id=:id
         "; 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(
             array(
-                "ftype"=>$ftype, "note"=>$note,"adate"=>$adate, "id"=>$id,"create_user"=>$create_user
+                "ftype"=>$ftype, "note"=>$note,"adate"=>$adate, "id"=>$id,"create_user"=>$create_user,"ftype_free"=>$ftype_free
             )
         ) or die("修改文档失败，请联系技术人员");
         return true;
@@ -363,7 +402,8 @@ class CustomerFile {
         $note,
         $create_user,
         $customer_id,
-        $adate
+        $adate,
+        $ftype_free
     ){
         $sql = "INSERT INTO customer_file VALUES(
             default,
@@ -375,13 +415,14 @@ class CustomerFile {
             :create_user,
             :create_user,
             :customer_id,
-            true
+            true,
+            :ftype_free
         )"; 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(
             array(
                 "ftype"=>$ftype, "note"=>$note, "create_user"=>$create_user, "customer_id"=>$customer_id,
-                "adate"=>$adate
+                "adate"=>$adate,"ftype_free"=>$ftype_free
             )
         ) or die ("创建文件失败,请联系技术人员");
             //print_r($stmt->errorInfo());
@@ -503,13 +544,13 @@ class DocController {
             $phone,
             $email,
             $this->create_user,
-            $customer_id,$related, $release, $company_name, $weixin))
+            $customer_id,$related, $release, $company_name, $weixin, $related_free, $release_free))
             return json_encode($this->contact_obj->get_list($customer_id));
     }
     function update_contact($params=array()){
         extract($params);
         if (@$this->contact_obj->update($id, $name, $title, $phone, $email, $this->create_user,
-            $related, $release, $company_name, $weixin))
+            $related, $release, $company_name, $weixin, $related_free, $release_free))
             return true;
     }
 
@@ -593,7 +634,9 @@ class DocController {
                     $contact["related"],
                     $contact["release"],
                     $contact["company_name"],
-                    $contact["weixin"]
+                    $contact["weixin"],
+                    $contact["related_free"],
+                    $contact["release_free"]
                 );
             } else {
                 @$this->contact_obj->update(
@@ -606,7 +649,9 @@ class DocController {
                     $contact["related"],
                     $contact["release"],
                     $contact["company_name"],
-                    $contact["weixin"]
+                    $contact["weixin"],
+                    $contact["related_free"],
+                    $contact["release_free"]
                     );
             }
         }
@@ -658,7 +703,8 @@ class DocController {
                     $fileobj["note"],
                     $this->create_user,
                     $id,
-                    $fileobj["adate"]
+                    $fileobj["adate"],
+                    $fileobj["ftype_free"]
                 );
             } else {
                 $this->customer_file->update(
@@ -667,7 +713,8 @@ class DocController {
                     $fileobj["create_user"],
                     $fileobj["adate"],
                     $fileobj["note"],
-                    $fileobj["id"]
+                    $fileobj["id"],
+                    $fileobj["ftype_free"]
                 );
                 $file_id = $fileobj["id"];
             }
@@ -729,7 +776,7 @@ class DocController {
                     $this->create_user,
                     $res,
                     $contact['related'], 
-                    $contact['release'], $contact['company_name'], $contact['weixin']
+                    $contact['release'], $contact['company_name'], $contact['weixin'],$contact["related_free"], $contact["release_free"]
                 );
             }
             foreach ($logs as $log){
@@ -760,7 +807,8 @@ class DocController {
                     $fileobj["note"],
                     $this->create_user,
                     $res,
-                    $fileobj["adate"]
+                    $fileobj["adate"],
+                    $fileobj["ftype_free"]
                 );   
                 foreach ($fileobj["files"] as $file) {
                     if (empty($file["file_name"])) {
