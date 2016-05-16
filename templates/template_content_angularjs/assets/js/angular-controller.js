@@ -724,7 +724,7 @@ EventDB.controller('listDocController', function($scope, $http, $rootScope){
                 if ($.isNumeric(raising_target_tmp[1])){
                     var money_type_1 = find_options_value(raising_target_tmp[1], money_type_options);
                     raising_target = raising_target + "M " + money_type_1;
-                    $("td", row).eq(6).text(raising_target);
+                    $("td", row).eq(5).text(raising_target);
                 }
                 //估值
                 var pre_money_tmp = data[6].split("M");
@@ -732,14 +732,14 @@ EventDB.controller('listDocController', function($scope, $http, $rootScope){
                 if ($.isNumeric(pre_money_tmp[1])){
                     var money_type_1 = find_options_value(pre_money_tmp[1], money_type_options);
                     pre_money = pre_money + "M " + money_type_1;
-                    $("td", row).eq(5).text(pre_money);
+                    $("td", row).eq(6).text(pre_money);
                 }
                 //类型
-                $("td", row).eq(6).text(find_options_value(data[6], investment_type_options));
+                $("td", row).eq(7).text(find_options_value(data[7], investment_type_options));
                 //阶段
-                $("td", row).eq(7).text(find_options_value(data[7], decision_stage_options));
+                $("td", row).eq(8).text(find_options_value(data[8], decision_stage_options));
                 //兴趣
-                $("td", row).eq(8).text(find_options_value(data[8], interest_level_options));
+                $("td", row).eq(9).text(find_options_value(data[9], interest_level_options));
             }
         });
         var tt = new $.fn.dataTable.TableTools(dt);
