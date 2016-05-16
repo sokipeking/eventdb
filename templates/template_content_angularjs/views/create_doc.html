@@ -3,38 +3,60 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th colspan="6">Basic Information</th>
+                    <th colspan="6">项目详情</th>
                 </tr>
             </thead>
-            <tr><td>File Name:</td><td colspan="5"><input type="text" class="form-control" ng-model="file_name"/></td></tr>
             <tr>
-                <td>Date Opened</td><td><input type="text"  class="form-control datepicker" ng-model="date_opened"/></td>
-                <td>Last Updated</td><td><input type="text"  class="form-control datepicker" ng-model="last_updated"/></td>
-                <td>Author</td><td><input type="text" class="form-control" ng-model="author"/></td>
+                <td colspan="6"><h6>基本信息</h6></td>
+            </tr>
+            <tr><td>项目名称</td><td><input type="text" class="form-control" ng-model="file_name"/></td>
+                <td>立项时间</td><td><input type="text"  class="form-control datepicker" ng-model="date_opened"/></td>
+                <td>更新时间</td><td><input type="text"  class="form-control datepicker" ng-model="last_updated"/></td>
+
             </tr>
             <tr>
-                <td>Jurisdiction</td><td><input type="text" class="form-control" ng-model="jurisdiction"/></td>
-                <td>Region</td><td><input type="text" class="form-control" ng-model="region"/></td>
-                <td>Website</td><td><input type="text" class="form-control" ng-model="website"/></td>
+                <td>行业</td><td><input type="text" class="form-control" ng-model="industry"/></td>
+                <td>地域</td><td><input type="text" class="form-control" ng-model="region"/></td>
+                <td>发展阶段</td><td>
+                    <select class="form-control" ng-model="stage" ng-options="item.id as item.label for item in stage_options">
+                    </select>
+            </td>
             </tr>
             <tr>
-                <td>Industry</td><td><input type="text" class="form-control" ng_model="industry"/></td>
-                <td>Model</td><td><input type="text" class="form-control" ng_model="model"/></td>
-                <td>Product</td><td><input type="text" class="form-control" ng-model="product"/></td>
+                <td>公司概况</td>
+                <td colspan="5"><input type="text" class="form-control" ng-model="company_info"/></td>
             </tr>
             <tr>
-                <td>Stage</td><td><input type="text" class="form-control" ng-model="stage"/></td>
-                <td>Pre-money</td><td><input type="text" class="form-control" ng-model="pre_money"/></td>
-                <td>Raising Target</td><td><input type="text" class="form-control" ng-model="raising_target"/></td>
+                 <td>融资规模</td><td><select class="form-control" ng-model="money_type_1" ng-options="item.id as item.label for item in money_type_options"></select><input type="text" class="form-control" ng-model="raising_target"/>M</td>
+                 <td>投前估值</td><td><select class="form-control" ng-model="money_type_2" ng-options="item.id as item.label for item in money_type_options"></select><input type="text" class="form-control" ng-model="pre_money"/>M</td>
+                 <td>投资类型</td><td><select class="form-control" ng-model="investment_type" ng-options="item.id as item.label for item in investment_type_options"/></td>
             </tr>
             <tr>
-                <td>Zebra's Stake</td><td><input type="text" class="form-control" ng-model="zebra_stake"/></td>
-                <td></td><td></td>
-                <td></td><td></td>
+                <td>投资结构</td>
+                <td colspan="3"><select class="form-control" ng-model="investment_structure" ng-options="item.id as item.label for item in investment_structure_options"/></td>
+                <td>来源</td>
+                <td><select class="form-control" ng-model="source" ng-options="item.id as item.label for item in source_options"/></td>
             </tr>
-            <tr><td>Current Status:</td><td colspan="5"><input type="text" class="form-control" ng-model="current_status"/></td></tr>
-            <tr><td>Next Move:</td><td colspan="5"><input type="text" class="form-control" ng-model="next_move"/></td></tr>
-            <tr><td>Note:</td><td colspan="5"><textarea class="form-control" ng-model="note"></textarea></td></tr>
+            <tr>
+                 <td>决策阶段</td><td><select class="form-control" ng-model="decision_stage" ng-options="item.id as item.label for item in decision_stage_options"/></td>
+                 <td>兴趣程度</td><td><select class="form-control" ng-model="interest_level" ng-options="item.id as item.label for item in interest_level_options"/></td>
+                 <td>下步计划</td><td><input type="text" class="form-control" ng-model="next_move"/></td>
+            </tr>
+            <tr><td>备注</td><td colspan="5"><textarea class="form-control" ng-model="note"></textarea></td></tr>
+        </table>
+    </div>
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="5">项目团队</th>
+                </tr>
+            </thead>
+            <tr><td colspan="2">项目团队</td><td colspan="3">
+                <label class="checkbox-inline" ng-repeat="item in team_options">
+                        <input type="checkbox" ng-click="set_team(item.id )" ng-checked="zebra_team.indexOf(item.id.toString()) > -1">{{item.label}}
+                </label>
+            </td></tr>
         </table>
     </div>
 
@@ -43,42 +65,45 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th colspan="5">Contact Information</th>
+                    <th colspan="5">项目文档</th>
                 </tr>
             </thead>
-            <tr><td colspan="5">Company Contact</td></tr>
             <tr>
-                <td></td>
-                <td>Name</td><td>Title</td><td>Phone</td><td>Email</td>
+                <td></td><td>时间</td><td>类型</td><td>文件</td><td>备注</td>
             </tr>
-            <tr ng-repeat="contact in contacts">
-                <td>
-                    <a href="#" class="fa fa-plus" ng-click="add_contact_row()"></a>
-                    <a href="#" class="fa fa-minus" ng-click="del_contact_row($index)"></a>
+            <tr ng-repeat="file in files">
+                <td class="c1">
+                    <a href="#" class="fa fa-plus" ng-click="add_file_row()"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_file_row($index)"></a>
                 </td>
                 <td>
-                    <input type="text" class="form-control" value="{{contact.name}}" ng-model="contact.name"/>
-                    <input type="hidden" class="form-control" value="{{contact.id}}" ng-model="contact.id"/>
+                    <input type="text" class="form-control datepicker" ng-model="file.adate"/>
                 </td>
-                <td><input type="text" class="form-control" value="{{contact.title}}" ng-model="contact.title"/></td>
-                <td><input type="text" class="form-control" value="{{contact.phone}}" ng-model="contact.phone"/></td>
-                <td><input type="text" class="form-control" value="{{contact.email}}" ng-model="contact.email"/></td>
+                <td><select class="form-control" ng-model="file.ftype" ng-options="item.id as item.label for item in ftype_options"></select></td>
+                <td>
+                    <div ng-repeat="f in file.files">
+                    <input type="text" class="input-upload form-control"  ng-model="f.file_name"/>
+                    <input type="hidden" class="form-control"  ng-model="f.file_path"/>
+                    <a href="#" data-target="#modal-dialog" ng-click="set_choice_log(2, $parent.$index, $index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
+                    <a target="_blank" href="{{f.file_path}}" ng-hide="!f.file_path" class="btn btn-sm btn-success">下载文件</a>
+                    <a href="#" class="fa fa-plus" ng-click="add_file_file($parent.$index)"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_file_file($parent.$index, $index)"></a>
+                </div>
+                </td>
+                <td><input type="text" class="form-control" ng-model="file.note"/></td>
             </tr>
-            <tr><td colspan="2">Zebra Team:</td><td colspan="3"><input type="text" class="form-control" ng-model="zebra_team"/></td></tr>
-            <tr><td colspan="2">Source:</td><td colspan="3"><input type="text" class="form-control" ng-model="source"/></td></tr>
-            <tr><td colspan="2">Note:</td><td colspan="3"><textarea class="form-control" ng-model="contact_note"></textarea></td></tr>
         </table>
-    </div>
 
+    </div>
     <div class="table-responsive" style="background-color:#fff; padding:10px">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th colspan="5">Activity Log/ Document Index</th>
+                    <th colspan="5">事件记录</th>
                 </tr>
             </thead>
             <tr>
-                <td></td><td>Date</td><td>Activity</td><td>Document</td><td>Note</td>
+                <td></td><td>时间</td><td>事件</td><td>文件</td><td>备注</td>
             </tr>
             <tr ng-repeat="log in logs">
                 <td class="c1">
@@ -91,17 +116,64 @@
                 <td><input type="text" class="form-control" value="{{log.activity}}" ng-model="log.activity"/></td>
                 <td>
                     <div ng-repeat="file in log.files">
+
                         <input type="text" class="input-upload form-control" value="{{file.file_name}}" ng-model="file.file_name"/>
                         <input type="hidden" class="form-control" value="{{file.file_path}}" ng-model="file.file_path"/>
-                        <a href="#" data-target="#modal-dialog" ng-click="set_choice_log($parent.$index, $index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
-                        <a target="_blank" href="{{file.document_file}}" ng-hide="!file.file_path" class="btn btn-sm btn-success">下载文件</a>
+                        <a href="#" data-target="#modal-dialog" ng-click="set_choice_log(1, $parent.$index, $index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
+                        <a target="_blank" href="{{file.file_path}}" ng-hide="!file.file_path" class="btn btn-sm btn-success">下载文件</a>
                     <a href="#" class="fa fa-plus" ng-click="add_log_file($parent.$index)"></a>
                     <a href="#" class="fa fa-minus" ng-click="del_log_file($parent.$index, $index)"></a>
                     </div>
                 </td>
-                <td><input type="text" class="form-control" value="{{log.note}}" ng-model="log.note"/></td>
+                <td><input type="text" class="form-control" ng-model="log.note"/></td>
             </tr>
         </table>
+
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="9">公司信息</th>
+                </tr>
+            </thead>
+            <tr>
+                <td colspan="2">公司全称</td><td colspan="7">
+                <input type="text" class="form-control" ng-model="company_name"/>
+            </td>
+            </tr>
+            <tr>
+                <td colspan="2">公司地址</td><td colspan="7"><input type="text" class="form-control" ng-model="company_address"/></td>
+            </tr>
+            <tr><td colspan="5">联系人</td></tr>
+            <tr>
+                <td></td>
+                <td>相关方</td><td>关系</td>
+                <td>姓名</td><td>公司</td><td>职位</td><td>电话</td><td>邮箱</td>
+                <td>微信号</td>
+            </tr>
+            <tr ng-repeat="contact in contacts">
+                <td>
+                    <a href="#" class="fa fa-plus" ng-click="add_contact_row()"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_contact_row($index)"></a>
+                </td>
+                <td><select class="form-control" ng-model="contact.related" ng-options="item.id as item.label for item in related_options"></select></td>
+                <td><select class="form-control" ng-model="contact.release" ng-options="item.id as item.label for item in release_options"></select></td>
+                <td>
+                    <input type="text" class="form-control" ng-model="contact.name"/>
+                    <input type="hidden" class="form-control" ng-model="contact.id"/>
+                </td>
+                <td>
+                     <input type="text" class="form-control" ng-model="contact.company_name"/>
+                </td>
+                <td><input type="text" class="form-control" ng-model="contact.title"/></td>
+                <td><input type="text" class="form-control" ng-model="contact.phone"/></td>
+                <td><input type="text" class="form-control" ng-model="contact.email"/></td>
+                <td><input type="text" class="form-control" ng-model="contact.weixin"/></td>
+            </tr>
+        </table>
+    </div>
+
+
     <button type="submit" class="btn btn-sm btn-success" ng-click="submit()">Submit</button>
     <input type="hidden" id="upload_file_path" value=""/>
     </div>

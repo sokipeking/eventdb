@@ -174,7 +174,88 @@ EventDB.controller('themePanelController', function($scope, $rootScope, $state) 
     App.initThemePanel();
 });
 
-EventDB.controller('createDocController', function($scope, $rootScope, $http, $stateParams, $state){
+
+var stage_options = [{id:1, label:"初创"},{id:2, label: "早期"},{id:3, label:"成长"},{id:4, label: "晚期"},{id:5, label: "已上市"}];
+var money_type_options = [{id:1, label: "US$"}, {id:2,label:"RMB"}];
+var investment_type_options = [{id:1, label: "早期控股"}, {id:2, label:"少数 （领投）"},{id:3, label: "少数 （跟投）"}, {id:4, label: "晚期控股"}];
+var source_options = [{id:1, label: "FA推介"}, {id:2, label: "会议"}, {id:3, label:"自有Network"}, {id:4, label:"公司主动联系"}, {id:5, label:"主动联系公司"}];
+var investment_structure_options = [{id:1, label: "美元投资"}, {id:2, label:"人民币投资"}, {id:3, label: "待定"}];
+var decision_stage_options = [{id:1, label: "筛选"}, {id:2, label:"评估"}, {id:3, label:"尽调"}, {id:4, label:"交割"}, {id:5, label:"投后"}, {id:6, label:"已否"}];
+var interest_level_options = [{id:1, label:"高"}, {id:2, label:"中"}, {id:3, label:"低"}];
+var team_options = [{id:1, label: "CC"}, {id:2, label: "David"}, {id:3, label: "Yilu"}];
+var related_options = [{id:1, label:"目标公司"}, {id:2, label:"投资人（跟投）"}, {id:3, label:"投资人（领投）"}, {id:4, label:"介绍人"}, {id:5, label:"第三方"}];
+var release_options = [{id:1, label:"管理层"}, {id:2, label:"FA"}, {id:3, label:"投行"}, {id:4, label:"律师"}, {id:5, label:"会计师"}, {id:6, label:"咨询顾问"}];
+var ftype_options = [{id:1, label: "Deal Memo"}, {id:2, label:"Preliminary IC Memo"}, {id:3, label:"Term Sheet"}, {id:4, label:"Final IC Memo"}];
+
+EventDB.controller('createDocController', function($scope, $http, $rootScope, $stateParams, $state){
+
+    
+    $scope.set_team = function(k){
+        var i = $scope.zebra_team.indexOf(k.toString())
+        if ( i > -1){
+            $scope.zebra_team.splice(i, 1);
+        } else {
+            $scope.zebra_team.push(k.toString());
+        }
+        //console.log($scope.zebra_team);
+    }
+
+    $scope.stage_options = stage_options;
+    $scope.money_type_options = money_type_options;
+    $scope.investment_type_options = investment_type_options;
+    $scope.source_options = source_options;
+    $scope.investment_structure_options = investment_structure_options;
+    $scope.decision_stage_options = decision_stage_options;
+    $scope.interest_level_options = interest_level_options;
+    $scope.team_options = team_options;
+    $scope.related_options = related_options;
+    $scope.release_options = release_options;
+    $scope.ftype_options = ftype_options;
+
+
+    $scope.files = [{adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]}];
+
+    $scope.add_file_file = function(i){
+        $scope.files[i].files.push(
+            {"id":"", "file_name": "", "file_path": ""}
+        );
+    };
+
+    $scope.add_file_row = function(){
+        $scope.files.push({adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]});
+    };
+    $scope.del_file_row = function(index){
+        $scope.files.splice(index, 1);
+        if ($scope.logs[log_index].files.length == 0) {
+            $scope.add_file_row(); 
+        }
+    };
+
+    $scope.del_file_file = function(row_index, file_index) {
+        if (confirm("确定要删除文件吗？")) {
+            var file_id = $scope.files[row_index].files[file_index]["id"];
+            if (file_id) {
+                $http.post("index.php", data={
+                    "page": "doc",
+                    "function": "delete_file",
+                    "args": {
+                        id: file_id
+                    }
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.files[row_index].files.splice(file_index, 1);
+            if ($scope.files[row_index].files.length == 0) {
+                $scope.add_file_file(row_index); 
+            }
+        }
+    };
+
     $scope.customer_id = $stateParams.customer_id;
     $scope.choice_log = 0;
     if ($scope.customer_id) {
@@ -184,28 +265,34 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
                 "function": "get_obj",
                 "args": {"id": $scope.customer_id}
             }).success(function (response){
+                $scope.file_name = response["file_name"];
                 $scope.date_opened = response["date_opened"];
                 $scope.last_updated = response["last_updated"];
-                $scope.jurisdiction = response["jurisdiction"];
-                $scope.region = response["region"];
-                $scope.website = response["website"];
                 $scope.industry = response["industry"];
-                $scope.model = response["model"];
-                $scope.product = response["product"];
+                $scope.region = response["region"];
                 $scope.stage = response["stage"];
-                $scope.pre_money = response["pre_money"];
+                $scope.company_info = response["company_info"];
+                $scope.money_type_1 = response["money_type_1"];
+
                 $scope.raising_target = response["raising_target"];
-                $scope.zebra_stake = response["zebra_stake"];
-                $scope.author = response["author"];
-                $scope.current_status = response["current_status"];
-                $scope.next_move = response["next_move"];
-                $scope.note = response["note"];
-                $scope.zebra_team = response["zebra_team"];
+                $scope.money_type_2 = response["money_type_2"];
+                $scope.pre_money = response["pre_money"];
+                $scope.investment_type = response["investment_type"];
+                $scope.investment_structure = response["investment_structure"];
                 $scope.source = response["source"];
-                $scope.contact_note = response["contact_note"];
-                $scope.file_name = response["file_name"];
-                $scope.contacts = response["contacts"];
-                $scope.logs = response["logs"];
+                $scope.decision_stage = response["decision_stage"];
+                $scope.interest_level = response["interest_level"];
+                $scope.next_move = response["next_move"];     
+                $scope.next_move = response["note"];     
+                $scope.note = response["note"];   
+                $scope.company_name = response["company_name"]; 
+                $scope.company_address = response["company_address"]; 
+                $scope.zebra_team = response["zebra_team"].split(','); 
+
+                $scope.logs= response["logs"];
+                $scope.contacts= response["contacts"];
+                //console.log($scope.contacts);
+                $scope.files= response["files"];
 
                 for(var i=0; i<$scope.logs.length;i++){
                     if ($scope.logs[i].files.length == 0){
@@ -219,6 +306,9 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
                 if ($scope.logs.length == 0) {
                     $scope.add_log_row();
                 }
+                if ($scope.files.length == 0) {
+                    $scope.add_file_row();
+                }
 
             }).error(function(response){
                 alert("网络错误");
@@ -226,11 +316,12 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
         }
         $scope.load_data();
     } else {
+        $scope.zebra_team = new Array();
         $scope.contacts = [
             {id:"", name: "", title: "", phone: "", email: ""}
         ];
         $scope.logs = [
-            {id: "", date: "", activity: "", document: "", document_file: "",  note: ""}
+            {id: "", date: "", activity: "", document: "", document_file: "",  note: "", files: [{"id":"", "file_name": "", "file_path": ""}]}
         ];
     }
     $scope.add_contact_row = function() {
@@ -356,7 +447,8 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
         }
     }
 
-    $scope.set_choice_log = function(log_index, file_index) {
+    $scope.set_choice_log = function(smode, log_index, file_index) {
+        $scope.smode = smode;
         $scope.choice_log = log_index;
         $scope.file_index = file_index;
     }
@@ -369,8 +461,15 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
 
     $scope.upload_file_change = function () {
         var uploaded_file = document.getElementById("upload_file_path").value.split("==");
-        $scope.logs[$scope.choice_log].files[$scope.file_index]["file_name"] = uploaded_file[0];
-        $scope.logs[$scope.choice_log].files[$scope.file_index]["file_path"] = uploaded_file[1];
+        //console.log(uploaded_file);
+
+        if ($scope.smode == 1) {
+            $scope.logs[$scope.choice_log].files[$scope.file_index]["file_name"] = uploaded_file[0];
+            $scope.logs[$scope.choice_log].files[$scope.file_index]["file_path"] = uploaded_file[1];
+        } else if ($scope.smode == 2) {
+            $scope.files[$scope.choice_log].files[$scope.file_index]["file_name"] = uploaded_file[0];
+            $scope.files[$scope.choice_log].files[$scope.file_index]["file_path"] = uploaded_file[1]; 
+        }
     };
 
     $scope.del_log_file = function(log_index, file_index) {
@@ -405,33 +504,36 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
 
     $scope.submit = function() {
         if ($scope.customer_id > 0) {
+            //console.log($scope.zebra_team);
             $http.post("index.php", data={
                 "page": "doc",
                 "function": "update_doc",
                 "args": {
-                    date_opened: $scope.date_opened,
-                    last_updated: $scope.last_updated,
-                    jurisdiction: $scope.jurisdiction,
-                    region: $scope.region,
-                    website: $scope.website,
-                    industry: $scope.industry,
-                    model: $scope.model,
-                    product: $scope.product,
-                    stage: $scope.stage,
-                    pre_money: $scope.pre_money,
-                    raising_target: $scope.raising_target,
-                    zebra_stake: $scope.zebra_stake,
-                    author: $scope.author,
-                    current_status: $scope.current_status,
-                    next_move: $scope.next_move,
-                    note: $scope.note,
-                    zebra_team: $scope.zebra_team,
-                    source: $scope.source,
-                    contact_note: $scope.contact_note,
-                    file_name: $scope.file_name,
-                    id: $scope.customer_id,
+                    file_name:$scope.file_name,
+                    date_opened:$scope.date_opened,
+                    last_updated:$scope.last_updated,
+                    industry:$scope.industry,
+                    region:$scope.region,
+                    stage:$scope.stage,
+                    company_info:$scope.company_info,
+                    money_type_1:$scope.money_type_1,
+                    raising_target:$scope.raising_target,
+                    money_type_2:$scope.money_type_2,
+                    pre_money:$scope.pre_money,
+                    investment_type:$scope.investment_type,
+                    investment_structure:$scope.investment_structure,
+                    source:$scope.source,
+                    decision_stage:$scope.decision_stage,
+                    interest_level:$scope.interest_level,
+                    next_move:$scope.next_move,
+                    note:$scope.note,
+                    zebra_team:$scope.zebra_team.join(","),
+                    company_name:$scope.company_name,
+                    company_address:$scope.company_address,
                     contacts: $scope.contacts,
-                    logs: $scope.logs
+                    id: $scope.customer_id,
+                    logs: $scope.logs,
+                    files:$scope.files
                 }
             }).success(function(response){
                 if(response == "1") {
@@ -443,32 +545,35 @@ EventDB.controller('createDocController', function($scope, $rootScope, $http, $s
             });
         }
         else{
+
             $http.post("index.php", data={
                 "page": "doc",
                 "function": "create_doc",
                 "args": {
-                    date_opened: $scope.date_opened,
-                    last_updated: $scope.last_updated,
-                    jurisdiction: $scope.jurisdiction,
-                    region: $scope.region,
-                    website: $scope.website,
-                    industry: $scope.industry,
-                    model: $scope.model,
-                    product: $scope.product,
-                    stage: $scope.stage,
-                    pre_money: $scope.pre_money,
-                    raising_target: $scope.raising_target,
-                    zebra_stake: $scope.zebra_stake,
-                    author: $scope.author,
-                    current_status: $scope.current_status,
-                    next_move: $scope.next_move,
-                    note: $scope.note,
-                    zebra_team: $scope.zebra_team,
-                    source: $scope.source,
-                    contact_note: $scope.contact_note,
-                    file_name: $scope.file_name,
+                    file_name:$scope.file_name,
+                    date_opened:$scope.date_opened,
+                    last_updated:$scope.last_updated,
+                    industry:$scope.industry,
+                    region:$scope.region,
+                    stage:$scope.stage,
+                    company_info:$scope.company_info,
+                    money_type_1:$scope.money_type_1,
+                    raising_target:$scope.raising_target,
+                    money_type_2:$scope.money_type_2,
+                    pre_money:$scope.pre_money,
+                    investment_type:$scope.investment_type,
+                    investment_structure:$scope.investment_structure,
+                    source:$scope.source,
+                    decision_stage:$scope.decision_stage,
+                    interest_level:$scope.interest_level,
+                    next_move:$scope.next_move,
+                    note:$scope.note,
+                    zebra_team:$scope.zebra_team.join(","),
+                    company_name:$scope.company_name,
+                    company_address:$scope.company_address,
                     contacts: $scope.contacts,
-                    logs: $scope.logs
+                    logs: $scope.logs,
+                    files:$scope.files
                 }
             }).success(function(response){
                 $rootScope.customer_id = response;
@@ -544,7 +649,7 @@ EventDB.controller('deleteCustomerController', function($scope, $http, $statePar
     }
 });
 
-EventDB.controller('listDocController', function($scope, $http){
+EventDB.controller('listDocController', function($scope, $http, $rootScope){
     $http.post("index.php", data={
         "page": "doc",
         "function": "get_list",
@@ -554,18 +659,39 @@ EventDB.controller('listDocController', function($scope, $http){
         var dt = $('#data-table').DataTable({
             //responsive: true,
             columns: [
-                {title: "No."},
-                {title: "Name"},
-                {title: "Industry"},
-                {title: "Region"},
-                {title: "Product"},
-                {title: "Pre-Money Valuation"},
-                {title: "Raising Target"},
-                {title: "Current Status"},
-                {title: "Next Move"},
-                {title: "Operate"}
+                {title: "立项时间"},
+                {title: "项目名称"},
+                {title: "行业"},
+                {title: "地域"},
+                {title: "融资"},
+                {title: "估值"},
+                {title: "类型"},
+                {title: "阶段"},
+                {title: "兴趣"},
+                {title: "下步"},
+                {title: ""}
             ],
-            data: response
+            data: response,
+            createdRow: function(row, data, index){
+                //融资
+                var raising_target_tmp = data[4].split("M");
+                var raising_target = raising_target_tmp[0];
+                var money_type_1 = find_options_value(raising_target_tmp[1], money_type_options);
+                raising_target = raising_target + "M " + money_type_1;
+                $("td", row).eq(4).text(raising_target);
+                //估值
+                var pre_money_tmp = data[4].split("M");
+                var pre_money = pre_money_tmp[0];
+                var money_type_1 = find_options_value(pre_money_tmp[1], money_type_options);
+                pre_money = pre_money + "M " + money_type_1;
+                $("td", row).eq(5).text(pre_money);
+                //类型
+                $("td", row).eq(6).text(find_options_value(data[6], investment_type_options));
+                //阶段
+                $("td", row).eq(7).text(find_options_value(data[7], decision_stage_options));
+                //兴趣
+                $("td", row).eq(8).text(find_options_value(data[8], interest_level_options));
+            }
         });
         var tt = new $.fn.dataTable.TableTools(dt);
         $( tt.fnContainer() ).insertBefore('div#data-table_length');
@@ -644,3 +770,12 @@ EventDB.controller("DocMailController", function ($stateParams, $state, $scope, 
         console.log(response);
     });
 });
+
+
+function find_options_value(id, options) {
+    for (var i=0; i < options.length; i ++){
+        if (options[i].id == id){
+            return options[i].label;
+        }
+    }
+}

@@ -51,7 +51,7 @@ EventDB.directive('datepicker', function(){
                 });
             };
             var options = {
-                format: "yyyy-MM-dd",
+                format: "yyyy-mm-dd",
                 autoclose: true,
                 todayHighlight: true,
                 

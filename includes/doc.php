@@ -2,9 +2,46 @@
 include_once("common.php");
 class DocObj{
     private $dbh;
-    function __construct(){
+    public $properties = array("id"=>null,
+    "file_name"=>null,
+    "date_opened"=>null,
+    "last_updated"=>null,
+    "industry"=>null,
+    "region"=>null,
+    "stage"=>null,
+    "company_info"=>null,
+    "money_type_1"=>null,
+    "raising_target"=>null,
+    "money_type_2" =>null,
+    "pre_money"=>null,
+    "investment_type"=>null,
+    "investment_structure"=>null,
+    "source"=>null,
+    "decision_stage"=>null,
+    "interest_level"=>null,
+    "next_move"=>null,
+    "note"=>null,
+    "zebra_team"=>null,
+    "company_name"=>null,
+    "company_address"=>null,
+    "create_dt"=>null,
+    "update_dt"=>null,
+    "create_user"=>null,
+    "last_editor"=>null,
+    "status"=>null
+    );
+    //extract($this->properties);
+
+    function __construct($id=null){
+        
         global $dbh;
         $this->dbh = $dbh;
+        $this->id = $id;
+        $this->obj = $this->get_obj($this->id);
+    }
+
+    function set($k, $v){
+        $this->$k = $v;
     }
 
     function delete($id) {
@@ -19,163 +56,92 @@ class DocObj{
         $stmt->execute(array("id"=>$id)) or die("删除日志失败");
         return true;
     }
-    function update(
-        $file_name,
-        $date_opened,
-        $last_updated,
-        $author,
-        $jurisdiction,
-        $region,
-        $website,
-        $industry,
-        $model,
-        $product,
-        $stage,
-        $pre_money,
-        $raising_target,
-        $zebra_stake,
-        $current_status,
-        $note,
-        $zebra_team,
-        $source,
-        $contact_note,
-        $create_user,
-        $next_move,
-        $id
-    ) {
+    function update() {
         $sql = "UPDATE customer SET 
+            file_name=:file_name,
             date_opened=:date_opened,
             last_updated=:last_updated,
-            author=:author,
-            jurisdiction=:jurisdiction,
-            region=:region,
-            website=:website,
             industry=:industry,
-            model=:model,
-            product=:product,
+            region=:region,
             stage=:stage,
-            pre_money=:pre_money,
+            company_info=:company_info,
+            money_type_1=:money_type_1,
             raising_target=:raising_target,
-            zebra_stake=:zebra_stake,
-            current_status=:current_status,
-            note=:note,
-            update_dt=current_timestamp,
-            last_editor=:create_user,
-            zebra_team=:zebra_team,
+            money_type_2=:money_type_2,
+            pre_money=:pre_money,
+            investment_type=:investment_type,
+            investment_structure=:investment_structure,
             source=:source,
-            contact_note=:contact_note,
-            file_name=:file_name,
-            next_move=:next_move
+            decision_stage=:decision_stage,
+            interest_level=:interest_level,
+            next_move=:next_move,
+            note=:note,
+            zebra_team=:zebra_team,
+            company_name=:company_name,
+            company_address=:company_address,
+            update_dt=now(),
+            last_editor=:last_editor
             WHERE id=:id";
         $stmt = $this->dbh->prepare($sql);
+        $params = array();
+        foreach($this->properties as $k=>$v){
+            if (in_array($k, array("create_user","create_dt", "update_dt","create_user", "status"))){
+                continue;
+            }
+            $params[$k] = $this->$k;
+        }
+        //print_r($params);
         $res = $stmt->execute(
-            array(
-                "date_opened"=>$date_opened,
-                "last_updated"=>$last_updated,
-                "author"=>$author,
-                "jurisdiction"=>$jurisdiction,
-                "region"=>$region,
-                "website"=>$website,
-                "industry"=>$industry,
-                "model"=>$model,
-                "product"=>$product,
-                "stage"=>$stage,
-                "pre_money"=>$pre_money,
-                "raising_target"=>$raising_target,
-                "zebra_team"=>$zebra_team,
-                "zebra_stake"=>$zebra_stake,
-                "current_status"=>$current_status,
-                "note"=>$note,
-                "create_user"=>$create_user,
-                "source"=>$source,
-                "contact_note"=>$contact_note,
-                "file_name"=>$file_name,
-                "next_move"=>$next_move,
-                "id"=>$id
-            )
+            $params
         ) or die ("文档修改失败, 请联系技术人员");
+        //print_r($stmt->errorInfo());
 
         return true;
     }
 
-    function create(
-        $file_name,
-        $date_opened,
-        $last_updated,
-        $author,
-        $jurisdiction,
-        $region,
-        $website,
-        $industry,
-        $model,
-        $product,
-        $stage,
-        $pre_money,
-        $raising_target,
-        $zebra_stake,
-        $current_status,
-        $note,
-        $zebra_team,
-        $source,
-        $contact_note,
-        $create_user,
-        $next_move
-    ) {
+    function create() {
         $sql = "insert into customer values(
             default,
+            :file_name,
             :date_opened,
             :last_updated,
-            :author,
-            :jurisdiction,
-            :region,
-            :website,
             :industry,
-            :model,
-            :product,
+            :region,
             :stage,
-            :pre_money,
+            :company_info,
+            :money_type_1,
             :raising_target,
-            :zebra_stake,
-            :current_status,
+            :money_type_2,
+            :pre_money,
+            :investment_type,
+            :investment_structure,
+            :source,
+            :decision_stage,
+            :interest_level,
+            :next_move,
             :note,
-            current_timestamp,
-            current_timestamp,
+            :zebra_team,
+            :company_name,
+            :company_address,
+            now(),
+            now(),
             :create_user,
             :last_editor,
-            :zebra_team,
-            :source,
-            :contact_note,
-            :file_name,
-            true,
-            :next_move
+            true
         )";
         $stmt = $this->dbh->prepare($sql);
+        $params = array();
+        foreach($this->properties as $k=>$v){
+            if (in_array($k, array("id", "create_dt", "update_dt", "status"))){
+                continue;
+            }
+            $params[$k] = $this->$k;
+        }
+        //print_r($params);
         $res = $stmt->execute(
-            array(
-                "date_opened"=>$date_opened,
-                "last_updated"=>$last_updated,
-                "author"=>$author,
-                "jurisdiction"=>$jurisdiction,
-                "region"=>$region,
-                "website"=>$website,
-                "industry"=>$industry,
-                "model"=>$model,
-                "product"=>$product,
-                "stage"=>$stage,
-                "pre_money"=>$pre_money,
-                "raising_target"=>$raising_target,
-                "zebra_team"=>$zebra_team,
-                "zebra_stake"=>$zebra_stake,
-                "current_status"=>$current_status,
-                "note"=>$note,
-                "create_user"=>$create_user,
-                "last_editor"=>$create_user,
-                "source"=>$source,
-                "contact_note"=>$contact_note,
-                "file_name"=>$file_name,
-                "next_move"=>$next_move
-            )
+            $params
         ) or die ("文档创建失败, 请联系技术人员");
+        //print_r($stmt->errorInfo());
 
         return $this->dbh->lastInsertId("customer_id_seq");
     }
@@ -187,18 +153,19 @@ class DocObj{
         $rows = array();
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
             array_push($rows, array(
-                $row["id"],
+                $row["date_opened"],
                 "<a href='#/app/doc/show/".$row["id"]."'>".$row["file_name"]."</a>",
                 $row["industry"],
                 $row["region"],
-                $row["product"],
-                $row["pre_money"],
-                $row["raising_target"],
-                $row["current_status"],
+                $row["pre_money"]."M".$row["money_type_1"],
+                $row["raising_target"]."M".$row["money_type_1"],
+                $row["investment_type"],
+                $row["decision_stage"],
+                $row["interest_level"],
                 $row["next_move"],
                 "<a class='fa-pencil fa' href='#/app/doc/edit/{$row["id"]}'></a>&nbsp;
                 <a class='fa-trash-o fa' href='#/app/doc/delete/{$row["id"]}'></a>&nbsp;
-                <a class='fa-send fa' href='#/app/doc/{$row["id"]}/mail'></a>"
+                <!--<a class='fa-send fa' href='#/app/doc/{$row["id"]}/mail'></a>-->"
             ));
         }
         return $rows;
@@ -211,9 +178,11 @@ class DocObj{
         $res = array();
         $contact_obj = new CompanyContact();
         $log_obj = new ActivityLog();
+        $doc_file = new CustomerFile();
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $customer) {
             $customer["contacts"] = $contact_obj->get_list($customer["id"]);
             $customer["logs"] = $log_obj->get_list($customer["id"]);
+            $customer["files"] = $doc_file->get_list($customer["id"]);;
             return $customer;
         }
     }
@@ -226,22 +195,23 @@ class LogFiles {
         $this->dbh = $dbh;
     }
 
-    function get_list($aid) {
-        $sql = "SELECT * FROM activity_log_files WHERE a_id=:aid AND status=true";
+    function get_list($aid, $d_type) {
+        $sql = "SELECT * FROM activity_log_files WHERE a_id=:aid AND d_type=:d_type AND status=true";
         $stmt = $this->dbh->prepare($sql);
-        $stmt->execute(array("aid"=>$aid));
+        $stmt->execute(array("aid"=>$aid, "d_type"=>$d_type));
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function create($a_id, $file_name, $file_path) {
+    function create($a_id, $file_name, $file_path, $d_type) {
         $sql = "INSERT INTO activity_log_files VALUES(
-            default, :a_id,:file_name,:file_path,true
+            default, :a_id,:file_name,:file_path,true,:d_type
         )";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(array(
             "a_id"=>$a_id,
             "file_name"=>$file_name,
-            "file_path"=>$file_path
+            "file_path"=>$file_path,
+            "d_type"=>$d_type
         ));
         return true;
     }
@@ -275,15 +245,17 @@ class CompanyContact {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function update($id, $name, $title, $phone, $email, $create_user) {
+    function update($id, $name, $title, $phone, $email, $create_user, $related, $release, $company_name, $weixin) {
         $sql = "UPDATE contact SET
             name=:name,
             title=:title, phone=:phone, email=:email,
-            update_dt=current_timestamp, last_editor=:create_user WHERE id=:id";
+            update_dt=current_timestamp, last_editor=:create_user,related=:related,
+            release=:release,company_name=:company_name,weixin=:weixin WHERE id=:id";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(
             array("name"=>$name, "title"=>$title, "phone"=>$phone,
-            "email"=>$email, "create_user"=>$create_user, "id"=>$id)
+            "email"=>$email, "create_user"=>$create_user, "id"=>$id, "related"=>$related,
+            "release"=>$release, "company_name"=>$company_name,"weixin"=>$weixin)
         ) or die("修改联系人失败，请联系技术人员");
         return true;
     }
@@ -301,7 +273,8 @@ class CompanyContact {
         $phone,
         $email,
         $create_user,
-        $customer_id
+        $customer_id,
+        $related, $release, $company_name, $weixin
     ){
         $sql = "INSERT INTO contact VALUES(
             default,
@@ -314,15 +287,107 @@ class CompanyContact {
             :create_user,
             :create_user,
             :customer_id,
-            true
+            true,
+            :related,
+            :release,
+            :company_name,
+            :weixin
         )";
         $stmt = $this->dbh->prepare($sql);
+        $params = array("name"=>$name, "title"=>$title, "phone"=>$phone,
+                "email"=>$email, "create_user"=>$create_user,
+                "customer_id"=>$customer_id,
+                "related"=>$related, "release"=>$release, "company_name"=>$company_name, "weixin"=>$weixin);
+        //print_r($params);
         $stmt->execute(
-            array("name"=>$name, "title"=>$title, "phone"=>$phone, "email"=>$email, "create_user"=>$create_user, "customer_id"=>$customer_id)
+            $params
         ) or die("创建联系人失败, 请联系技术人员");
         return true;
     }
 }
+
+class CustomerFile {
+    private $dbh;
+    function __construct(){
+        global $dbh;
+        $this->dbh = $dbh;
+    }
+
+    function get_list($customer_id){
+        $sql = "SELECT * FROM customer_file WHERE customer_id=:customer_id AND status=true ORDER BY ID ASC";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("customer_id"=>$customer_id));
+        $res = array();
+        $file_obj = new LogFiles();
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $log) {
+            $log["files"] = $file_obj->get_list($log["id"], 2);
+            array_push($res, $log);
+        }
+        return $res;
+    }
+
+    function delete($id) {
+        $sql = "UPDATE customer_file set status=false WHERE id=:id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("id"=>$id)) or die("删除文档失败，请联系技术人员");
+        return true;
+    }
+    
+    function update(
+        $ftype,
+        $note,
+        $create_user,
+        $adate,
+        $note,
+        $id
+    ){
+        $sql = "UPDATE customer_file SET 
+            ftype=:ftype,
+            note=:note,
+            update_dt=current_timestamp,
+            last_editor=:create_user,
+            adate=:adate
+            WHERE id=:id
+        "; 
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(
+            array(
+                "ftype"=>$ftype, "note"=>$note,"adate"=>$adate, "id"=>$id,"create_user"=>$create_user
+            )
+        ) or die("修改文档失败，请联系技术人员");
+        return true;
+    }
+
+    function create(
+        $ftype,
+        $note,
+        $create_user,
+        $customer_id,
+        $adate
+    ){
+        $sql = "INSERT INTO customer_file VALUES(
+            default,
+            :adate,
+            :ftype,
+            :note,
+            current_timestamp,
+            current_timestamp,
+            :create_user,
+            :create_user,
+            :customer_id,
+            true
+        )"; 
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(
+            array(
+                "ftype"=>$ftype, "note"=>$note, "create_user"=>$create_user, "customer_id"=>$customer_id,
+                "adate"=>$adate
+            )
+        ) or die ("创建文件失败,请联系技术人员");
+            //print_r($stmt->errorInfo());
+        return $this->dbh->lastInsertId("customer_file_id_seq");
+    }
+} 
 
 class ActivityLog {
     private $dbh;
@@ -338,7 +403,7 @@ class ActivityLog {
         $res = array();
         $file_obj = new LogFiles();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $log) {
-            $log["files"] = $file_obj->get_list($log["id"]);
+            $log["files"] = $file_obj->get_list($log["id"], 1);
             array_push($res, $log);
         }
         return $res;
@@ -421,12 +486,14 @@ class DocController {
     private $log_obj;
     private $create_user;
     private $file_obj;
+    private $customer_file;
     function __construct(){
         $this->doc = new DocObj();
         $this->contact_obj = new CompanyContact();
         $this->log_obj = new ActivityLog();
         $this->file_obj = new LogFiles();
         $this->create_user = $_SESSION["userinfo"]->username;
+        $this->customer_file = new CustomerFile();
     }
     
     function create_contact($params=array()) {
@@ -436,12 +503,13 @@ class DocController {
             $phone,
             $email,
             $this->create_user,
-            $customer_id))
+            $customer_id,$related, $release, $company_name, $weixin))
             return json_encode($this->contact_obj->get_list($customer_id));
     }
     function update_contact($params=array()){
         extract($params);
-        if (@$this->contact_obj->update($id, $name, $title, $phone, $email, $this->create_user))
+        if (@$this->contact_obj->update($id, $name, $title, $phone, $email, $this->create_user,
+            $related, $release, $company_name, $weixin))
             return true;
     }
 
@@ -496,31 +564,17 @@ class DocController {
     }
 
     function update_doc($params=array()){
-        extract($params);
-        $res = @$this->doc->update(
-            $file_name,
-            $date_opened,
-            $last_updated,
-            $author,
-            $jurisdiction,
-            $region,
-            $website,
-            $industry,
-            $model,
-            $product,
-            $stage,
-            $pre_money,
-            $raising_target,
-            $zebra_stake,
-            $current_status,
-            $note,
-            $zebra_team,
-            $source,
-            $contact_note,
-            $this->create_user,
-            $next_move,
-            $id
-        );
+        //extract($params);
+        foreach ($params as $k=>$v){
+            if (in_array($k, array("id","contacts", "logs", "files"))) {
+                $$k = $v;
+                continue;
+            }
+            $this->doc->set($k, $v);
+        }
+        $this->doc->set("id", $id);
+        $this->doc->set("last_editor", $this->create_user);
+        $this->doc->update();
         foreach($contacts as $contact){
             if (empty($contact["id"])){
                 $contact_res = @$this->contact_obj->create(
@@ -529,7 +583,11 @@ class DocController {
                     $contact["phone"],
                     $contact["email"],
                     $this->create_user,
-                    $id
+                    $id,
+                    $contact["related"],
+                    $contact["release"],
+                    $contact["company_name"],
+                    $contact["weixin"]
                 );
             } else {
                 @$this->contact_obj->update(
@@ -538,7 +596,12 @@ class DocController {
                     $contact["title"],
                     $contact["phone"],
                     $contact["email"],
-                    $this->create_user);
+                    $this->create_user,
+                    $contact["related"],
+                    $contact["release"],
+                    $contact["company_name"],
+                    $contact["weixin"]
+                    );
             }
         }
         foreach ($logs as $log){
@@ -565,13 +628,14 @@ class DocController {
                 );
                 $log_id = $log["id"];
             }
+
             foreach ($log["files"] as $file) {
                 if (empty($file["id"])) {
                     if (empty($file["file_name"])) {
                         continue;
                     }
                     $this->file_obj->create(
-                        $log_id, $file["file_name"], $file["file_path"]
+                        $log_id, $file["file_name"], $file["file_path"], 1
                     );
                 } else {
                     $this->file_obj->update(
@@ -579,6 +643,44 @@ class DocController {
                     ); 
                 }
             }
+
+        }
+        foreach ($files as $fileobj){
+            if (empty($fileobj["id"])) {
+                $file_id = $this->customer_file->create(
+                    $fileobj["ftype"],
+                    $fileobj["note"],
+                    $this->create_user,
+                    $id,
+                    $fileobj["adate"]
+                );
+            } else {
+                $this->customer_file->update(
+                    $fileobj["ftype"],
+                    $fileobj["note"],
+                    $fileobj["create_user"],
+                    $fileobj["adate"],
+                    $fileobj["note"],
+                    $fileobj["id"]
+                );
+                $file_id = $fileobj["id"];
+            }
+
+            foreach ($fileobj["files"] as $file) {
+                if (empty($file["id"])) {
+                    if (empty($file["file_name"])) {
+                        continue;
+                    }
+                    $this->file_obj->create(
+                        $file_id, $file["file_name"], $file["file_path"], 2
+                    );
+                } else {
+                    $this->file_obj->update(
+                        $file["id"], $file_id, $file["file_name"], $file["file_path"]
+                    ); 
+                }
+            }
+            
         }
         return true;
     }
@@ -596,42 +698,30 @@ class DocController {
     }
 
     function create_doc($params=array()) {
-        extract($params);
+        //extract($params);
         //print_r($params);
-        $res = @$this->doc->create(
-            $file_name,
-            $date_opened,
-            $last_updated,
-            $author,
-            $jurisdiction,
-            $region,
-            $website,
-            $industry,
-            $model,
-            $product,
-            $stage,
-            $pre_money,
-            $raising_target,
-            $zebra_stake,
-            $current_status,
-            $note,
-            $zebra_team,
-            $source,
-            $contact_note,
-            $this->create_user,
-            $next_move,
-            $contacts,
-            $logs
-        );
+        foreach ($params as $k=>$v){
+            if (in_array($k, array("contacts", "logs", "files"))) {
+                $$k = $v;
+                continue;
+            }
+            $this->doc->set($k, $v);
+        }
+        $this->doc->set("create_user", $this->create_user);
+        $this->doc->set("last_editor", $this->create_user);
+        $res = @$this->doc->create();
         if ($res) {
             foreach ($contacts as $contact){
+
                 $contact_res = @$this->contact_obj->create(
                     $contact["name"],
                     $contact["title"],
                     $contact["phone"],
                     $contact["email"],
                     $this->create_user,
-                    $res
+                    $res,
+                    $contact['related'], 
+                    $contact['release'], $contact['company_name'], $contact['weixin']
                 );
             }
             foreach ($logs as $log){
@@ -643,7 +733,32 @@ class DocController {
                     $this->create_user,
                     $res,
                     $log["adate"]
-                );            
+                );   
+                foreach ($log["files"] as $file) {
+                    if (empty($file["file_name"])) {
+                        continue;
+                    }
+                    $this->file_obj->create(
+                        $log_res, $file["file_name"], $file["file_path"], 1
+                    );
+                }         
+            }
+            foreach ($files as $fileobj){
+                $log_res = @$this->customer_file->create(
+                    $fileobj["ftype"],
+                    $fileobj["note"],
+                    $this->create_user,
+                    $res,
+                    $fileobj["adate"]
+                );   
+                foreach ($fileobj["files"] as $file) {
+                    if (empty($file["file_name"])) {
+                        continue;
+                    }
+                    $this->file_obj->create(
+                        $log_res, $file["file_name"], $file["file_path"], 2
+                    );
+                }         
             }
             #$to = array("projects@zebraglobalcap.com");
             #$subject = "文档[{$res}]{$file_name}创建成功";
