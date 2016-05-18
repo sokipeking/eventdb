@@ -174,8 +174,13 @@ class DocObj{
         $tpl = substr($tpl, 0, strlen($tpl) - strlen($id));
         return $tpl.$id;
     }
-    function get_list(){
-        $sql = "SELECT * FROM customer WHERE status=true";
+    function get_list($decision_stage){
+        $str = "";
+        if (!empty($decision_stage)){
+            //print_r($decision_stage);
+            $str = " and decision_stage in (".join($decision_stage, ",").")"; 
+        }
+        $sql = "SELECT * FROM customer WHERE status=true". $str;
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $rows = array();
@@ -478,12 +483,14 @@ class ActivityLog {
             WHERE id=:id
         "; 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->execute(
-            array(
+        $params =  array(
                 "activity"=>$activity, "document"=>$document, "document_file"=>$document_file, "note"=>$note, "create_user"=>$create_user,
                 "adate"=>$adate, "id"=>$id
-            )
+            );
+        $stmt->execute(
+            $params
         ) or die("修改日志失败，请联系技术人员");
+
         return true;
     }
 
@@ -607,7 +614,8 @@ class DocController {
     }
 
     function get_list($params=array()){
-        return json_encode($this->doc->get_list()); 
+        extract($params);
+        return json_encode($this->doc->get_list($decision_stage)); 
     }
 
     function update_doc($params=array()){
@@ -621,7 +629,7 @@ class DocController {
         }
         $this->doc->set("id", $id);
         $this->doc->set("last_editor", $this->create_user);
-        $this->doc->update();
+        @$this->doc->update();
         foreach($contacts as $contact){
             if (empty($contact["id"])){
                 $contact_res = @$this->contact_obj->create(
@@ -656,7 +664,7 @@ class DocController {
             }
         }
         foreach ($logs as $log){
-            if (empty($log["id"])) {
+            if (empty($log["id"]) && isset($log["adate"]) && $log['adate']) {
                 $log_id = $this->log_obj->create(
                     $log["activity"],
                     "",
@@ -666,7 +674,7 @@ class DocController {
                     $id,
                     $log["adate"]
                 );
-            } else {
+            } else if(!empty($log["id"])){
                 $this->log_obj->update(
                     $log["activity"],
                     "",
@@ -689,7 +697,7 @@ class DocController {
                         $log_id, $file["file_name"], $file["file_path"], 1
                     );
                 } else {
-                    $this->file_obj->update(
+                    @$this->file_obj->update(
                         $file["id"], $log_id, $file["file_name"], $file["file_path"]
                     ); 
                 }
@@ -697,7 +705,7 @@ class DocController {
 
         }
         foreach ($files as $fileobj){
-            if (empty($fileobj["id"])) {
+            if (empty($fileobj["id"]) && isset($fileobj["adate"])&& $fileobj["adate"]) {
                 $file_id = $this->customer_file->create(
                     $fileobj["ftype"],
                     $fileobj["note"],
@@ -706,7 +714,7 @@ class DocController {
                     $fileobj["adate"],
                     $fileobj["ftype_free"]
                 );
-            } else {
+            } else if(!empty($fileobj["id"])){
                 $this->customer_file->update(
                     $fileobj["ftype"],
                     $fileobj["note"],

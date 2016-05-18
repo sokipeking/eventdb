@@ -694,13 +694,22 @@ EventDB.controller('deleteCustomerController', function($scope, $http, $statePar
 });
 
 EventDB.controller('listDocController', function($scope, $http, $rootScope){
+    var dt=null;
+
+$scope.load_data = function($status){
     $http.post("index.php", data={
         "page": "doc",
         "function": "get_list",
-        "args": {}
+        "args": {
+            decision_stage: $status
+        }
     }).success(function(response){
+        if(dt){
+            dt.destroy();
+            dt = null;
+        }
     if ($('#data-table').length !== 0) {
-        var dt = $('#data-table').DataTable({
+        dt = $('#data-table').DataTable({
             //responsive: true,
             columns: [
             {title: "ID"},
@@ -747,6 +756,11 @@ EventDB.controller('listDocController', function($scope, $http, $rootScope){
     }}).error(function(response){
         alert("网络错误");
     });
+
+}
+
+$scope.load_data([6, 5]);
+
 });
 
 EventDB.controller('listMemberController', function($scope, $http){
