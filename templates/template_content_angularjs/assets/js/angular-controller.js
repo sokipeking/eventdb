@@ -696,7 +696,7 @@ EventDB.controller('deleteCustomerController', function($scope, $http, $statePar
 EventDB.controller('listDocController', function($scope, $http, $rootScope){
     var dt=null;
 
-$scope.load_data = function($status){
+$scope.load_data_by_stage = function($status){
     $http.post("index.php", data={
         "page": "doc",
         "function": "get_list",
@@ -759,7 +759,7 @@ $scope.load_data = function($status){
 
 }
 
-$scope.load_data([6, 5]);
+$scope.load_data_by_stage([]);
 
 });
 
