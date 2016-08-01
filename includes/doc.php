@@ -235,7 +235,7 @@ class LogFiles {
     }
 
     function get_list($aid, $d_type) {
-        $sql = "SELECT * FROM activity_log_files WHERE a_id=:aid AND d_type=:d_type AND status=true";
+        $sql = "SELECT * FROM activity_log_files WHERE a_id=:aid AND d_type=:d_type AND status=true order by id";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(array("aid"=>$aid, "d_type"=>$d_type));
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

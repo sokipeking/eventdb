@@ -16,6 +16,17 @@
                     <li ui-sref-active="active"><a ui-sref="app.doc.create">创建项目</a></li>
                 </ul>
             </li>
+            <li class="has-sub" ng-class="{active:$state.includes('app.industry')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-laptop"></i>
+                    <span>行业研究</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active"><a ui-sref="app.industry.list">研究目录</a></li>
+                    <li ui-sref-active="active"><a ui-sref="app.industry.create">创建行业</a></li>
+                </ul>
+            </li>
             <li class="has-sub" ng-class="{active:$state.includes('app.settings')}">
                 <a href="javascript:;">
                     <b class="caret pull-right"></b>

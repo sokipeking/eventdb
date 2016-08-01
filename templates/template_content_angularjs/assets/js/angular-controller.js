@@ -174,11 +174,273 @@ EventDB.controller('themePanelController', function($scope, $rootScope, $state) 
     App.initThemePanel();
 });
 
+EventDB.controller('listIndustryController', function($scope, $http, $rootScope){
+    var dt=null;
+    $scope.load_data = function(){
+        $http.post("index.php", data={
+            "page": "industry",
+            "function": "get_industry_list",
+            "args": {
+            }
+        }).success(function(response){
+            if(dt){
+                dt.destroy();
+                dt = null;
+            }
+            if ($('#data-table').length !== 0) {
+                dt = $('#data-table').DataTable({
+                    //responsive: true,
+                    columns: [
+                        {title: "ID"},
+                        {title: "行业名称"},
+                        {title: "子行业名称"},
+                        {title: "地域/国家"},
+                        {title: "最近更新"},
+                        {title: ""}
+                    ],
+                    data: response
+                });
+                var tt = new $.fn.dataTable.TableTools(dt);
+                $( tt.fnContainer() ).insertBefore('div#data-table_length');
+            }}).error(function(response){
+                alert("网络错误");
+            });
+    }
 
+    $scope.load_data(); 
+});
 
+EventDB.controller('createIndustryController', function($scope, $http, $state, $stateParams){
+    var industry_id = $stateParams.industry_id;
+    $scope.industry_options = industry_options;
+    $scope.add_file_file = function(i){
+        $scope.files[i].files.push(
+            {"id":"", "file_name": "", "file_path": ""}
+        );
+    };
+
+    $scope.add_zebra_file_file = function(i){
+        $scope.zebra_files[i].files.push(
+            {"id":"", "file_name": "", "file_path": ""}
+        );
+    };
+
+    $scope.add_file_row = function(){
+        $scope.files.push({adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]});
+    };
+    $scope.add_zebra_file_row = function(){
+        $scope.zebra_files.push({adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]});
+    };
+    $scope.del_file_row = function(index){
+        if (confirm("确定要删除文件吗?")){
+            var dc_file_id = $scope.files[index]["id"];
+            if (dc_file_id){
+                $http.post("index.php", data={
+                    "page": "doc",
+                    "function": "delete_document_file",
+                    "args": {
+                        id: dc_file_id
+                    }
+
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.files.splice(index, 1);
+            if ($scope.files.length == 0) {
+                $scope.add_file_row(); 
+            }
+        }
+    };
+    $scope.del_zebra_file_row = function(index){
+        if (confirm("确定要删除文件吗?")){
+            var dc_file_id = $scope.zebra_files[index]["id"];
+            if (dc_file_id){
+                $http.post("index.php", data={
+                    "page": "industry",
+                    "function": "delete_industry_file",
+                    "args": {
+                        id: dc_file_id
+                    }
+
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.zebra_files.splice(index, 1);
+        }
+    };
+
+    $scope.del_file_file = function(row_index, file_index) {
+        if (confirm("确定要删除文件吗？")) {
+            var file_id = $scope.files[row_index].files[file_index]["id"];
+            if (file_id) {
+                $http.post("index.php", data={
+                    "page": "doc",
+                    "function": "delete_file",
+                    "args": {
+                        id: file_id
+                    }
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.files[row_index].files.splice(file_index, 1);
+            if ($scope.files[row_index].files.length == 0) {
+                $scope.add_file_file(row_index); 
+            }
+        }
+    };
+
+    $scope.del_zebra_file_file = function(row_index, file_index) {
+        if (confirm("确定要删除文件吗？")) {
+            var file_id = $scope.zebra_files[row_index].files[file_index]["id"];
+            if (file_id) {
+                $http.post("index.php", data={
+                    "page": "doc",
+                    "function": "delete_file",
+                    "args": {
+                        id: file_id
+                    }
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.zebra_files[row_index].files.splice(file_index, 1);
+            if ($scope.zebra_files[row_index].files.length == 0) {
+                $scope.add_zebra_file_file(row_index); 
+            }
+        }
+    };
+
+    $scope.upload_file = function(){
+        var iframe = document.getElementById("upload_frame");
+        iframe.contentWindow.document.getElementById("upload_form").submit();
+    };
+
+    $scope.set_choice_log = function(smode, log_index, file_index) {
+        $scope.smode = smode;
+        $scope.choice_log = log_index;
+        $scope.file_index = file_index;
+    };
+
+    $scope.upload_file_change = function () {
+        var uploaded_file = document.getElementById("upload_file_path").value.split("==");
+        if ($scope.smode == 1) {
+            $scope.zebra_files[$scope.choice_log].files[$scope.file_index]["file_name"] = uploaded_file[0];
+            $scope.zebra_files[$scope.choice_log].files[$scope.file_index]["file_path"] = uploaded_file[1];
+        } else if ($scope.smode == 2) {
+            $scope.files[$scope.choice_log].files[$scope.file_index]["file_name"] = uploaded_file[0];
+            $scope.files[$scope.choice_log].files[$scope.file_index]["file_path"] = uploaded_file[1]; 
+        }
+    };
+    
+
+    $scope.edit = function(industry_id) {
+        $http.post("index.php", data={
+            "page": "industry",
+            "function": "get_industry_info",
+            "args": {"id": industry_id}
+        }).success(function(response){
+            $scope.industry_name = response["industry_name"];
+            $scope.sub_industry_name = response["sub_industry_name"];
+            $scope.region = response["region"];
+            $scope.summary = response["summary"];
+            $scope.release_projects = response["releease_projects"];
+            $scope.last_update = response["last_update"];
+            $scope.industry_name = response["industry_name"];
+            $scope.industry_name = response["industry_name"];
+            $scope.industry_option = response["industry_option"];
+            $scope.industry_option_free = response["industry_option_free"];
+            $scope.industry_option_text = response["industry_option_text"];
+            $scope.zebra_files = response["zbera_files"];
+            $scope.files = response["files"];
+            $scope.release_projects_link = response["release_projects_link"];
+
+            $scope.submit = function(){
+                $http.post("index.php", data={
+                    "page": "industry",
+                    "function": "update_industry",
+                    "args": {
+                        id: industry_id,
+                        industry_name: $scope.industry_name,
+                        sub_industry_name: $scope.sub_industry_name,
+                        region: $scope.region,
+                        summary: $scope.summary,
+                        release_projects: $scope.release_projects,
+                        last_update: $scope.last_update,
+                        industry_option: $scope.industry_option,
+                        industry_option_free: $scope.industry_option_free,
+                        industry_option_text: $scope.industry_option_text,
+                        zebra_files: $scope.zebra_files,
+                        files: $scope.files
+                    }
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("修改行业", "成功");
+                    } else {
+                        notify("修改行业", response);
+                    }
+                });   
+            }
+        }); 
+    };
+    $scope.create = function() {
+        $scope.files = [{adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]}];
+        $scope.zebra_files = [{adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]}];
+
+        $scope.submit = function (){
+            var industry = {};
+
+            $http.post("index.php", data={
+                "page": "industry",
+                "function": "create_industry",
+                "args": {
+                    industry_name: $scope.industry_name,
+                    sub_industry_name: $scope.sub_industry_name,
+                    region: $scope.region,
+                    summary: $scope.summary,
+                    release_projects: $scope.release_projects,
+                    last_update: $scope.last_update,
+                    industry_option: $scope.industry_option,
+                    industry_option_free: $scope.industry_option_free,
+                    industry_option_text: $scope.industry_option_text,
+                    zebra_files: $scope.zebra_files,
+                    files: $scope.files
+                }
+            }).success(function(response){
+                if (response == "1") {
+                    notify("创建行业", "成功");
+                } else {
+                    notify("创建行业", response);
+                }
+            }); 
+        }
+    };
+    if(industry_id == undefined) {
+        $scope.create();
+    } else {
+        $scope.edit(industry_id);
+    }
+});
 
 EventDB.controller('createDocController', function($scope, $http, $rootScope, $stateParams, $state){
-
     
     $scope.set_team = function(k){
         var i = $scope.zebra_team.indexOf(k.toString())
@@ -756,7 +1018,6 @@ $scope.load_data_by_stage = function($status){
     }}).error(function(response){
         alert("网络错误");
     });
-
 }
 
 $scope.load_data_by_stage([]);
@@ -830,6 +1091,5 @@ EventDB.controller("DocMailController", function ($stateParams, $state, $scope, 
         "args": {"doc_id": doc_id}
     }).success(function(response){
         $scope.mails = response;
-        console.log(response);
     });
 });

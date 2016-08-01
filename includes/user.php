@@ -100,7 +100,7 @@ class UserController {
     }
 
     function login($params = array()) {
-        $username = $params["username"];
+        $username = strtolower($params["username"]);
         $password = $params["password"];
         if (!$this->user->login($username, $password))
             return "登录失败，用户名或密码错误";

@@ -1,0 +1,135 @@
+<div ng-controller="createIndustryController" class="m-createdoc">
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="6">行业详情</th>
+                </tr>
+            </thead>
+            <tr>
+                <td colspan="6"><h6>基本信息</h6></td>
+            </tr>
+            <tr><td>行业名称</td><td><input type="text" class="form-control" ng-model="industry_name"/></td>
+                <td>子行业名</td><td><input type="text" class="form-control" ng-model="sub_industry_name"/></td>
+                <td>地域/国家</td><td><input type="text" class="form-control" ng-model="region"/></td>
+            </tr>
+            <tr>
+                <td>行业概况</td><td colspan="5"><textarea class="form-control" ng-model="summary"></textarea></td>
+            </tr>
+            <tr>
+                <td>相关项目</td><td colspan=3><textarea class="form-control" ng-model="release_projects"></textarea>
+                    <span>请输入项目编号如 P000001，多个项目以英文半角;隔开。</span>
+                    <div ng-repeat="link in release_projects_link">
+                        <a href="#/app/doc/show/{{link.id}}">{{link.file_name}}</a>
+                    </div>
+                </td>
+                <td>更新时间</td><td><input type="text"  class="form-control datepicker" ng-model="last_update"/></td>
+            </tr>
+            <tr>
+                <td>行业信息</td>
+                <td>
+                    <select class="form-control" ng-model="industry_option" ng-options="item.id as item.label for item in industry_options">
+                    </select>
+                    <input type="text" class="form-control" ng-model="industry_option_free" ng-hide="industry_option != 999"/>
+                </td>
+                <td colspan=4>
+                    <input type="text" class="form-control" ng-model="industry_option_text"/>
+            </td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="5">zebra研究</th>
+                </tr>
+            </thead>
+            <tr>
+                <td></td><td>更新时间</td><td>研究主题</td><td>相关文档</td><td>文档类型</td>
+            </tr>
+            <tr ng-repeat="file in zebra_files">
+                <td class="c1">
+                    <a href="#" class="fa fa-plus" ng-click="add_zebra_file_row()"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_zebra_file_row($index)"></a>
+                </td>
+                <td>
+                    <input type="text" class="form-control datepicker" ng-model="file.adate"/>
+                </td>
+                <td>
+                    <input type="text" class="form-control" ng-model="file.title"/>
+                </td>
+                <td>
+                    <div ng-repeat="f in file.files">
+                    <input type="text" class="input-upload form-control"  ng-model="f.file_name"/>
+                    <input type="hidden" class="form-control"  ng-model="f.file_path"/>
+                    <a href="#" data-target="#modal-dialog" ng-click="set_choice_log(1, $parent.$index, $index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
+                    <a target="_blank" href="{{f.file_path}}" ng-hide="!f.file_path" class="btn btn-sm btn-success">下载文件</a>
+                    <a href="#" class="fa fa-plus" ng-click="add_zebra_file_file($parent.$index)"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_zebra_file_file($parent.$index, $index)"></a>
+                </div>
+                </td>
+                <td><input type="text" class="form-control" ng-model="file.ftype"/></td>
+            </tr>
+        </table>
+
+    </div>
+    
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th colspan="5">外部资料</th>
+                </tr>
+            </thead>
+            <tr>
+                <td></td><td>更新时间</td><td>研究主题</td><td>相关文档</td><td>文档类型</td>
+            </tr>
+            <tr ng-repeat="file in files">
+                <td class="c1">
+                    <a href="#" class="fa fa-plus" ng-click="add_file_row()"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_file_row($index)"></a>
+                </td>
+                <td>
+                    <input type="text" class="form-control datepicker" ng-model="file.adate"/>
+                </td>
+                <td>
+                    <input type="text" class="form-control" ng-model="file.title"/>
+                </td>
+                <td>
+                    <div ng-repeat="f in file.files">
+                    <input type="text" class="input-upload form-control"  ng-model="f.file_name"/>
+                    <input type="hidden" class="form-control"  ng-model="f.file_path"/>
+                    <a href="#" data-target="#modal-dialog" ng-click="set_choice_log(2, $parent.$index, $index)" class="btn btn-sm btn-success" data-toggle="modal">上传文件</a>
+                    <a target="_blank" href="{{f.file_path}}" ng-hide="!f.file_path" class="btn btn-sm btn-success">下载文件</a>
+                    <a href="#" class="fa fa-plus" ng-click="add_file_file($parent.$index)"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_file_file($parent.$index, $index)"></a>
+                </div>
+                </td>
+                <td><input type="text" class="form-control" ng-model="file.ftype"/></td>
+            </tr>
+        </table>
+
+    </div>
+    
+    <button type="submit" class="btn btn-sm btn-success" ng-click="submit()">Submit</button>
+    <input type="hidden" id="upload_file_path" value=""/>
+    <!-- #modal-dialog -->
+    <div class="modal fade" id="modal-dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">上传文件</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe id="upload_frame" scrolling=false style="border:0; width:100%" src="upload.php"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal" ng-click="upload_file_change()">Save & Close</a>
+                    <a href="javascript:;" class="btn btn-sm btn-success" ng-click="upload_file()">Upload</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

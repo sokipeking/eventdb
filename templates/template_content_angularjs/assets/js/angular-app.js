@@ -19,6 +19,7 @@ var team_options = [{id:1, label: "CC"}, {id:2, label: "David"},
 var related_options = [{id:1, label:"目标公司"}, {id:2, label:"投资人（跟投）"}, {id:3, label:"投资人（领投）"}, {id:4, label:"介绍人"}, {id:5, label:"第三方"}, {id:999, label:"其他"}];
 var release_options = [{id:1, label:"管理层"}, {id:2, label:"FA"}, {id:3, label:"投行"}, {id:4, label:"律师"}, {id:5, label:"会计师"}, {id:6, label:"咨询顾问"}, {id:999, label:"其他"}];
 var ftype_options = [{id:1, label: "Deal Memo"}, {id:2, label:"Preliminary IC Memo"}, {id:3, label:"Term Sheet"}, {id:4, label:"Final IC Memo"}, {id:999, label:"其他"}];
+var industry_options = [{id:1, label: "行业规模"}, {id:2,label:"主流模式"}, {id:3, label:"Top-tier Company"}, {id:999, label:"新增项目"}];
 
 
 function find_options_value(id, options) {
@@ -46,6 +47,68 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', "$sceProvider", function
             url: '/app',
             templateUrl: 'template/app.html',
             abstract: true
+        })
+        .state('app.industry', {
+            url: '/industry',
+            abstract: true,
+            template: '<div class="ui-view"></div>',
+        })
+        .state('app.industry.create', {
+            url: "/create",
+            templateUrl: "views/create_industry.html",
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        files: [
+                            'assets/plugins/bootstrap-datepicker/css/datepicker.css',
+                            'assets/plugins/bootstrap-datepicker/css/datepicker3.css',
+                            'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js',
+                            'assets/plugins/gritter/css/jquery.gritter.css',
+                            'assets/plugins/gritter/js/jquery.gritter.js'
+                        ] 
+                    });
+                }]
+            },
+
+        })
+        .state('app.industry.edit', {
+            url: "/edit/:industry_id",
+            templateUrl: "views/create_industry.html",
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        files: [
+                            'assets/plugins/bootstrap-datepicker/css/datepicker.css',
+                            'assets/plugins/bootstrap-datepicker/css/datepicker3.css',
+                            'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js',
+                            'assets/plugins/gritter/css/jquery.gritter.css',
+                            'assets/plugins/gritter/js/jquery.gritter.js'
+                        ] 
+                    });
+                }]
+            },
+
+        })
+        .state('app.industry.list', {
+            url: "/list",
+            templateUrl: "views/list_industry.html",
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        serie: true,
+                        files: [
+                            'assets/plugins/DataTables/media/css/dataTables.bootstrap.min.css',
+                            'assets/plugins/DataTables/extensions/Buttons/css/buttons.bootstrap.min.css',
+                            'assets/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.min.css',
+                            'assets/plugins/DataTables/media/js/jquery.dataTables.js',
+                            'assets/plugins/DataTables/media/js/dataTables.bootstrap.min.js',
+                            'assets/plugins/DataTables/media/css/dataTables.tableTools.css',
+                            'assets/plugins/DataTables/media/js/dataTables.tableTools.js',
+                            'assets/plugins/DataTables/extensions/Responsive/js/dataTables.responsive.min.js'
+                        ]
+                    });
+                }]
+            }
         })
         .state('app.doc', {
             url: '/doc',
