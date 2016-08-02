@@ -19,6 +19,6 @@ if ($_POST) {
         require_once("includes/PHPMailer/PHPMailerAutoload.php");        
         require_once("includes/mail.php");        
     }
-    echo call_user_func(array($controller, $_POST["function"]), $_POST["args"]);
+    echo call_user_func(array($controller, @$_POST["function"]), $_POST["args"]);
 }
 ?>

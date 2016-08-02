@@ -25,16 +25,20 @@
                 </td>
                 <td>更新时间</td><td><input type="text"  class="form-control datepicker" ng-model="last_update"/></td>
             </tr>
-            <tr>
+            <tr ng-repeat="industry_info in industry_infos">
                 <td>行业信息</td>
                 <td>
-                    <select class="form-control" ng-model="industry_option" ng-options="item.id as item.label for item in industry_options">
+                    <select class="form-control" ng-model="industry_info.industry_option" ng-options="item.id as item.label for item in industry_options">
                     </select>
-                    <input type="text" class="form-control" ng-model="industry_option_free" ng-hide="industry_option != 999"/>
+                    <input type="text" class="form-control" ng-model="industry_info.industry_option_free" ng-hide="industry_info.industry_option != 999"/>
                 </td>
-                <td colspan=4>
-                    <input type="text" class="form-control" ng-model="industry_option_text"/>
-            </td>
+                <td colspan=3>
+                    <input type="text" class="form-control" ng-model="industry_info.industry_option_text"/>
+                </td>
+                <td>
+                    <a href="#" class="fa fa-plus" ng-click="add_industry_info()"></a>
+                    <a href="#" class="fa fa-minus" ng-click="del_industry_info($index)"></a>
+                </td>
             </tr>
         </table>
     </div>

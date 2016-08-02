@@ -123,6 +123,85 @@ class IndustryObj{
     }
 }
 
+class IndustryInfo{
+    private $dbh;
+
+    function __construct(){
+        global $dbh;
+        $this->dbh = $dbh;
+    }
+    
+    public $properties = array(
+        "id"=>null,
+            "industry_option"=>null,
+            "industry_option_free"=>null,
+            "industry_option_text"=>null,
+            "status"=>null,
+            "industry_id"=>null
+        );
+
+    function create(){
+        $sql = "INSERT INTO industry_info values
+            (
+                default,
+                :industry_option,
+                :industry_option_free,
+                :industry_option_text,
+                true,
+                :industry_id
+            )
+            ";
+        $stmt = $this->dbh->prepare($sql);
+        $params = array();
+        foreach($this->properties as $k=>$v){
+            if (in_array($k, array("id", "status"))){
+                continue;
+            }
+            $params[$k] = $this->$k;
+        }
+        $res = $stmt->execute(
+            $params
+        ) or die ("行业信息创建失败, 请联系技术人员");
+        //print_r($stmt->errorInfo());
+        return $this->dbh->lastInsertId("industry_info_id_seq");
+    }
+
+    function update(){
+        $sql = "UPDATE industry_info 
+                set industry_option=:industry_option,
+                industry_option_free=:industry_option_free,
+                industry_option_text=:industry_option_text
+                WHERE id=:id
+            ";
+        $stmt = $this->dbh->prepare($sql);
+        $params = array();
+        foreach($this->properties as $k=>$v){
+            if (in_array($k, array("status", "industry_id"))){
+                continue;
+            }
+            $params[$k] = $this->$k;
+        }
+        $res = $stmt->execute(
+            $params
+        ) or die ("行业信息修改失败, 请联系技术人员");
+        //print_r($stmt->errorInfo());
+        return true;
+    }
+    function delete($id) {
+        $sql = "UPDATE industry_info SET status=false WHERE id=:id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("id"=>$id));
+        return true;
+    }
+    function get_list($industry_id){
+        $sql = "SELECT * FROM industry_info WHERE status=true AND industry_id=:industry_id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array("industry_id"=>$industry_id));
+        return $stmt->fetchAll();
+    }
+
+}
+
 class IndustryFile{
     
     private $dbh;
@@ -232,6 +311,7 @@ class IndustryController{
         $this->industry = new IndustryObj();
         $this->industry_file_1 = new IndustryFile();
         $this->industry_file_2 = new IndustryFile();
+        $this->industry_info = new IndustryInfo();
         $this->create_user = $_SESSION["userinfo"]->username;
         $this->file_obj = new LogFiles();
     }
@@ -246,6 +326,7 @@ class IndustryController{
         $info = $this->industry->get_info($id); 
         $info["zbera_files"] = $this->industry_file_1->get_list($id, 1);
         $info["files"] = $this->industry_file_1->get_list($id, 2);
+        $info["industry_infos"] = $this->industry_info->get_list($id);
         return json_encode($info);
     }
     function get_industry_list() {
@@ -267,6 +348,10 @@ class IndustryController{
     function delete_industry($params=array()){
         extract($params);
         return $this->industry->delete($id);
+    }
+    function delete_industry_info($params=array()){
+        extract($params);
+        return $this->industry_info->delete($id);
     }
     function delete_industry_file($params=array()){
         extract($params);
@@ -303,6 +388,23 @@ class IndustryController{
                 $this->create_industry_file($sfile, 2);
             } else {
                 $this->edit_industry_file($sfile);
+            }
+        }
+        foreach($industry_infos as $industry_info) {
+            if (empty($industry_info["industry_option"]))
+                continue;
+            if (empty($industry_info["id"])){
+                $this->industry_info->industry_option = $industry_info["industry_option"];
+                $this->industry_info->industry_option_free = $industry_info["industry_option_free"];
+                $this->industry_info->industry_option_text = $industry_info["industry_option_text"];
+                $this->industry_info->industry_id= $this->industry->id;
+                $this->industry_info->create();
+            } else {
+                $this->industry_info->id = $industry_info["id"];
+                $this->industry_info->industry_option = $industry_info["industry_option"];
+                $this->industry_info->industry_option_free = $industry_info["industry_option_free"];
+                $this->industry_info->industry_option_text = $industry_info["industry_option_text"];
+                $this->industry_info->update();
             }
         }
         return true;
@@ -368,6 +470,15 @@ class IndustryController{
         $this->industry->industry_option_free = $industry_option_free; 
         $this->industry->industry_option_text = $industry_option_text; 
         $this->industry->id = @$this->industry->create();
+        foreach($industry_infos as $industry_info) {
+            if (empty($industry_info["industry_option"]))
+                continue;
+            $this->industry_info->industry_option = $industry_info["industry_option"];
+            $this->industry_info->industry_option_free = $industry_info["industry_option_free"];
+            $this->industry_info->industry_option_text = $industry_info["industry_option_text"];
+            $this->industry_info->industry_id= $this->industry->id;
+            $this->industry_info->create();
+        }
         foreach($zebra_files as $zebra_file){
             if (empty($zebra_file["title"]))
                 continue;

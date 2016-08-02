@@ -218,7 +218,28 @@ EventDB.controller('createIndustryController', function($scope, $http, $state, $
             {"id":"", "file_name": "", "file_path": ""}
         );
     };
+    $scope.del_industry_info= function(index){
+        if (confirm("确定要删除信息吗?")){
+            var dc_file_id = $scope.industry_infos[index]["id"];
+            if (dc_file_id){
+                $http.post("index.php", data={
+                    "page": "industry",
+                    "function": "delete_industry_info",
+                    "args": {
+                        id: dc_file_id
+                    }
 
+                }).success(function(response){
+                    if (response == "1") {
+                        notify("删除文件", "成功");
+                    } else {
+                        notify("删除文件", response);
+                    }
+                });
+            }
+            $scope.industry_infos.splice(index, 1);
+        }
+    };
     $scope.add_zebra_file_file = function(i){
         $scope.zebra_files[i].files.push(
             {"id":"", "file_name": "", "file_path": ""}
@@ -351,6 +372,11 @@ EventDB.controller('createIndustryController', function($scope, $http, $state, $
         }
     };
     
+    $scope.add_industry_info = function(){
+        $scope.industry_infos.push(
+            {industry_option:"", industry_option_free: "", industry_option_text: ""}
+        ); 
+    };
 
     $scope.edit = function(industry_id) {
         $http.post("index.php", data={
@@ -371,6 +397,16 @@ EventDB.controller('createIndustryController', function($scope, $http, $state, $
             $scope.industry_option_text = response["industry_option_text"];
             $scope.zebra_files = response["zbera_files"];
             $scope.files = response["files"];
+            $scope.industry_infos = response["industry_infos"];
+            if ($scope.industry_infos.length == 0) {
+                $scope.add_industry_info();
+            }
+            if($scope.zebra_files.length==0){
+                $scope.add_zebra_file_row();
+            }
+            if($scope.files.length==0){
+                $scope.add_file_row();
+            }
             $scope.release_projects_link = response["release_projects_link"];
 
             $scope.submit = function(){
@@ -389,7 +425,8 @@ EventDB.controller('createIndustryController', function($scope, $http, $state, $
                         industry_option_free: $scope.industry_option_free,
                         industry_option_text: $scope.industry_option_text,
                         zebra_files: $scope.zebra_files,
-                        files: $scope.files
+                        files: $scope.files,
+                        industry_infos: $scope.industry_infos
                     }
                 }).success(function(response){
                     if (response == "1") {
@@ -404,6 +441,7 @@ EventDB.controller('createIndustryController', function($scope, $http, $state, $
     $scope.create = function() {
         $scope.files = [{adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]}];
         $scope.zebra_files = [{adate:"", ftype:"", note:"",files: [{"id":"", "file_name": "", "file_path": ""}]}];
+        $scope.industry_infos = [{industry_option:"", industry_option_free: "", industry_option_text: ""}];
 
         $scope.submit = function (){
             var industry = {};
@@ -422,7 +460,8 @@ EventDB.controller('createIndustryController', function($scope, $http, $state, $
                     industry_option_free: $scope.industry_option_free,
                     industry_option_text: $scope.industry_option_text,
                     zebra_files: $scope.zebra_files,
-                    files: $scope.files
+                    files: $scope.files,
+                    industry_infos: $scope.industry_infos
                 }
             }).success(function(response){
                 if (response == "1") {
