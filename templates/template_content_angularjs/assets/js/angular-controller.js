@@ -923,6 +923,36 @@ EventDB.controller('createDocController', function($scope, $http, $rootScope, $s
         }
     }
 });
+EventDB.controller('showIndustryController', function($scope, $http, $stateParams) {
+    $scope.industry_id = $stateParams.industry_id;
+    if ($scope.industry_id) {
+        $http.post("index.php", data={
+            "page": "industry",
+            "function": "get_industry_info",
+            "args": {"id": $scope.industry_id}
+        }).success(function (response){
+            $scope.industry_name = response["industry_name"];
+            $scope.sub_industry_name = response["sub_industry_name"];
+            $scope.region = response["region"];
+            $scope.summary = response["summary"];
+            $scope.release_projects = response["releease_projects"];
+            $scope.last_update = response["last_update"];
+            $scope.industry_name = response["industry_name"];
+            $scope.industry_name = response["industry_name"];
+            $scope.industry_option = response["industry_option"];
+            $scope.industry_option_free = response["industry_option_free"];
+            $scope.industry_option_text = response["industry_option_text"];
+            $scope.zebra_files = response["zbera_files"];
+            $scope.files = response["files"];
+            $scope.industry_infos = response["industry_infos"];
+            $scope.release_projects_link = response["release_projects_link"];
+
+        }).error(function(response){
+            alert("网络错误");
+        });
+    }
+});
+
 
 
 EventDB.controller('showDocController', function($scope, $http, $stateParams) {
@@ -976,6 +1006,24 @@ EventDB.controller('showDocController', function($scope, $http, $stateParams) {
         });
     }
 });
+
+EventDB.controller('deleteIndustryController', function($scope, $http, $stateParams,$state){
+    $scope.industry_id = $stateParams.industry_id;
+    if (confirm("确定要删除这条行业信息吗？")){
+        $http.post("index.php", data={
+            "page": "industry",
+            "function": "delete_industry",
+            "args": {"id": $scope.industry_id}
+        }).success(function(response){
+            if (response=="1"){
+                $state.go("app.industry.list");
+            } else {
+                notify("删除行业信息", response);
+            }
+        });
+    }
+});
+
 
 EventDB.controller('deleteCustomerController', function($scope, $http, $stateParams,$state){
     $scope.customer_id = $stateParams.customer_id;

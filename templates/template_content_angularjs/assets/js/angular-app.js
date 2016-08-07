@@ -110,6 +110,26 @@ EventDB.config(['$stateProvider', '$urlRouterProvider', "$sceProvider", function
                 }]
             }
         })
+        .state('app.industry.show', {
+            url: '/show/:industry_id',
+            templateUrl: 'views/show_industry.html',
+            data: { pageTitle: 'Industry Show' }
+        })
+        .state('app.industry.delete', {
+            url: '/delete/:industry_id',
+            templaye:"<div class='ui-view'></div>",
+            controller: "deleteIndustryController",
+            resolve: {
+                service: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        files: [
+                            'assets/plugins/gritter/css/jquery.gritter.css',
+                            'assets/plugins/gritter/js/jquery.gritter.js'
+                        ] 
+                    });
+                }]
+            }
+        })
         .state('app.doc', {
             url: '/doc',
             abstract: true,

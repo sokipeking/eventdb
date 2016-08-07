@@ -334,7 +334,7 @@ class IndustryController{
         $rows = array();
         foreach($res as $row) {
             array_push($rows, array(
-                $this->get_industry_id($row["id"]),
+                "<a href='#/app/industry/show/".$row["id"]."'>".$this->get_industry_id($row["id"])."</a>",
                 $row["industry_name"],
                 $row["sub_industry_name"],
                 $row["region"],

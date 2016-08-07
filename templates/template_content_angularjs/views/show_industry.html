@@ -1,0 +1,83 @@
+<style>
+    .td_bg {
+        background-color: #AEB7C8;
+        font-weight:bold;
+        color: #000;
+        font-size:14px
+    }
+</style>
+<div ng-controller="showIndustryController">
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+<h4>项目详情</h4>
+        <table class="table table-bordered">
+            <tr><td class="td_bg">行业名称</td><td>{{industry_name}}</td>
+                <td class="td_bg">子行业名称</td><td>{{sub_industry_name}}</td>
+                <td class="td_bg">地域/国家</td><td>{{region}}</td>
+            </tr>
+            <tr>
+                <td class="td_bg">行业概况</a></td><td colspan=5>{{summary}}</td>
+            </tr>
+            <tr>
+                <td class="td_bg">相关项目</td><td colspan="3">
+                    
+                    <div ng-repeat="link in release_projects_link">
+                        <a href="#/app/doc/show/{{link.id}}">{{link.file_name}}</a>
+                    </div>
+                </td>
+                <td class="td_bg">更新时间</td>
+                <td>{{last_update}}</td>
+            </tr>
+            <tr ng-repeat="industry_info in industry_infos">
+                <td class="td_bg">行业信息</td><td colspan="5">
+                    {{industry_info.industry_option | industry_info}}
+                    <span ng-hide="industry_info.industry_option != 999">{{industry_info.industry_option_free}}</span> 
+                    :
+                    {{industry_info.industry_option_text}}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+<h4>zebra研究</h4>
+        <table class="table table-bordered">
+            <tr>
+                <td class="td_bg">更新时间</td><td class="td_bg">研究主题</td><td class="td_bg">相关文档</td><td class="td_bg">文档类型</td>
+            </tr>
+            <tr ng-repeat="f in zebra_files">
+                <td>
+                    {{f.adate}}
+                </td>
+                <td>{{f.title}}</td>
+                <td>
+                <div ng-repeat="file in f.files">
+                    <a target="_blank" href="{{file.file_path}}" ng-hide="!file.file_path">{{file.file_name}}</a>
+                </div>
+                </td>
+                <td>{{f.ftype}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="table-responsive" style="background-color:#fff; padding:10px">
+<h4>外部资料</h4>
+        <table class="table table-bordered">
+            <tr>
+                <td class="td_bg">更新时间</td><td class="td_bg">研究主题</td><td class="td_bg">相关文档</td><td class="td_bg">文档类型</td>
+            </tr>
+            <tr ng-repeat="f in files">
+                <td>
+                    {{f.adate}}
+                </td>
+                <td>{{f.title}}</td>
+                <td>
+                <div ng-repeat="file in f.files">
+                    <a target="_blank" href="{{file.file_path}}" ng-hide="!file.file_path">{{file.file_name}}</a>
+                </div>
+                </td>
+                <td>{{f.ftype}}</td>
+            </tr>
+        </table>
+    </div>
+
+</div>

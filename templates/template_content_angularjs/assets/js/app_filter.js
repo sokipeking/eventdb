@@ -75,6 +75,13 @@ EventDB.filter('related', function(){
     }
     return filter;
 });
+EventDB.filter('industry_info', function(){
+    var filter = function(input) {
+        return find_options_value(input, industry_options);
+    }
+    return filter;
+});
+
 
 EventDB.filter('release', function(){
     var filter = function(input) {
@@ -119,3 +126,4 @@ EventDB.filter('mail_content', ['$sce', function($sce){
          return input; //$sce.trustAsHtml(tmp);
     };
 }]);
+
